@@ -1,0 +1,9 @@
+:root{--black:#050505;--graphite:#111111;--gray:#1A1A1A;--gold:#D99A0B;--gold2:#F2B21A;--white:#fff;--text:#B8B8B8}
+body{background:var(--black);color:var(--white);font-family:Arial,sans-serif}
+.navbar,.card,.footer{background:var(--graphite)}
+.btn-gold{background:var(--gold);color:#111;font-weight:700;text-transform:uppercase}
+.btn-gold:hover{background:var(--gold2)}
+.price{color:var(--gold2);font-weight:700}
+.hero{background:linear-gradient(rgba(0,0,0,.65),rgba(0,0,0,.65)),url('/public/images/hero-texture.jpg');padding:5rem 0;background-size:cover}
+.product-card{background:var(--gray);border:1px solid #222;transition:.2s}
+.product-card:hover{transform:translateY(-4px);border-color:var(--gold)}
