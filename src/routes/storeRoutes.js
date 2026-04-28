@@ -1,0 +1,33 @@
+const { Router } = require('express');
+const storeController = require('../controllers/storeController');
+const cartController = require('../controllers/cartController');
+const checkoutController = require('../controllers/checkoutController');
+const authController = require('../controllers/authController');
+const { ensureCustomer } = require('../middlewares/authMiddleware');
+
+const router = Router();
+router.get('/', storeController.home);
+router.get('/categoria/:slug', storeController.category);
+router.get('/produto/:slug', storeController.product);
+router.get('/busca', storeController.search);
+router.get('/carrinho', cartController.view);
+router.post('/carrinho', cartController.add);
+router.post('/carrinho/frete', cartController.freight);
+router.post('/carrinho/remover/:index', cartController.remove);
+router.get('/checkout', checkoutController.page);
+router.post('/checkout', checkoutController.process);
+router.get('/checkout/sucesso', checkoutController.success);
+router.post('/webhooks/asaas', checkoutController.webhook);
+
+router.get('/login', authController.loginPage);
+router.post('/login', authController.login);
+router.get('/cadastro', authController.registerPage);
+router.post('/cadastro', authController.register);
+router.post('/logout', authController.logout);
+router.get('/meus-pedidos', ensureCustomer, (req, res) => res.render('customer/orders', { orders: [] }));
+
+['sobre','contato','politica-de-privacidade','termos-de-uso','trocas-e-devolucoes','faq','recuperar-senha'].forEach((slug)=>{
+  router.get(`/${slug}`,(req,res)=>res.render('store/static',{slug}));
+});
+
+module.exports = router;

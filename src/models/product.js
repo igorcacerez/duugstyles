@@ -1,0 +1,5 @@
+const { DataTypes, Model } = require('sequelize');
+const sequelize = require('../config/database');
+class Product extends Model { static associate(models){ this.belongsTo(models.Category,{foreignKey:'categoryId'}); this.hasMany(models.ProductImage,{foreignKey:'productId'}); this.hasMany(models.ProductVariation,{foreignKey:'productId'});} }
+Product.init({ categoryId:DataTypes.INTEGER,name:DataTypes.STRING,slug:{type:DataTypes.STRING,unique:true},descriptionShort:DataTypes.TEXT,descriptionLong:DataTypes.TEXT,price:DataTypes.DECIMAL(10,2),promoPrice:DataTypes.DECIMAL(10,2),cost:DataTypes.DECIMAL(10,2),isFeatured:{type:DataTypes.BOOLEAN,defaultValue:false},isNew:{type:DataTypes.BOOLEAN,defaultValue:true},isBestSeller:{type:DataTypes.BOOLEAN,defaultValue:false},isActive:{type:DataTypes.BOOLEAN,defaultValue:true},metaTitle:DataTypes.STRING,metaDescription:DataTypes.STRING,keywords:DataTypes.STRING,weight:DataTypes.FLOAT,height:DataTypes.FLOAT,width:DataTypes.FLOAT,length:DataTypes.FLOAT },{sequelize,modelName:'Product',tableName:'products'});
+module.exports=Product;

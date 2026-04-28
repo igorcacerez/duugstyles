@@ -1,0 +1,1 @@
+<div class="container py-5"><h1><%= category?.name || 'Categoria' %></h1><div class="row g-3"><% products.forEach(p=>{ %><div class="col-6 col-md-3"><div class="product-card p-3"><h2 class="h6"><%= p.name %></h2><p class="price">R$ <%= p.promoPrice || p.price %></p><a href="/produto/<%= p.slug %>" class="btn btn-gold btn-sm">Comprar</a></div></div><% }) %></div></div>

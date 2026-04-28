@@ -1,0 +1,2 @@
+<section class="hero"><div class="container"><h1 class="display-4 fw-bold">Vista o estilo. Domine a rua.</h1><p>Streetwear masculino com presença.</p><a href="/busca" class="btn btn-gold">Comprar agora</a></div></section>
+<div class="container py-5"><h2>Destaques</h2><div class="row g-3"><% featured.forEach(p=>{ %><div class="col-6 col-md-3"><div class="product-card p-3 h-100"><h3 class="h6"><%= p.name %></h3><p class="price">R$ <%= p.promoPrice || p.price %></p><a class="btn btn-sm btn-gold" href="/produto/<%= p.slug %>">Ver produto</a></div></div><% }) %></div></div>

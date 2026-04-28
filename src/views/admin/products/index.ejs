@@ -1,0 +1,1 @@
+<div class="container py-4"><h1>Produtos</h1><a href="/admin/produtos/novo" class="btn btn-gold mb-3">Novo produto</a><table class="table table-dark"><tr><th>Nome</th><th>Categoria</th><th>Preço</th></tr><% products.forEach(p=>{ %><tr><td><%= p.name %></td><td><%= p.Category?.name || '-' %></td><td>R$ <%= p.price %></td></tr><% }) %></table></div>
