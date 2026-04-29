@@ -1,0 +1,26 @@
+<section class="admin-page">
+  <div class="admin-heading">
+    <div><h1>Cupons</h1><p>Descontos, campanhas relampago e beneficios de primeira compra.</p></div>
+    <a class="btn btn-gold" href="/admin/cupons/novo">Novo cupom</a>
+  </div>
+  <div class="admin-card">
+    <table class="admin-table">
+      <thead><tr><th>Codigo</th><th>Tipo</th><th>Valor</th><th>Usos</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        <% coupons.forEach((coupon) => { %>
+          <tr>
+            <td><strong><%= coupon.code %></strong></td>
+            <td><%= coupon.type %></td>
+            <td><%= coupon.type === 'percent' ? `${Number(coupon.value).toFixed(0)}%` : `R$ ${Number(coupon.value).toFixed(2).replace('.', ',')}` %></td>
+            <td><%= coupon.uses || 0 %>/<%= coupon.maxUses || 'sem limite' %></td>
+            <td><span class="status-pill <%= coupon.isActive ? 'green' : 'red' %>"><%= coupon.isActive ? 'ativo' : 'inativo' %></span></td>
+            <td class="admin-actions">
+              <a class="btn btn-sm btn-outline-dark" href="/admin/cupons/<%= coupon.id %>/editar">Editar</a>
+              <form method="post" action="/admin/cupons/<%= coupon.id %>/remover"><button class="btn btn-sm btn-outline-danger">Desativar</button></form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>

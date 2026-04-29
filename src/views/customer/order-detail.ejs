@@ -1,0 +1,32 @@
+<section class="page-hero compact-hero">
+  <div class="container">
+    <span class="eyebrow">Pedido</span>
+    <h1><%= order.number %></h1>
+    <p>Status: <strong><%= order.status %></strong></p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container checkout-layout">
+    <div class="account-panel">
+      <h2>Itens do pedido</h2>
+      <div class="order-list">
+        <% order.OrderItems.forEach((item) => { %>
+          <div class="order-row">
+            <span><strong><%= item.productName %></strong><small>Quantidade <%= item.quantity %></small></span>
+            <strong>R$ <%= Number(item.totalPrice || 0).toFixed(2).replace('.', ',') %></strong>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+    <aside class="order-summary">
+      <h2>Resumo</h2>
+      <div class="summary-line"><span>Subtotal</span><strong>R$ <%= Number(order.subtotal || 0).toFixed(2).replace('.', ',') %></strong></div>
+      <div class="summary-line"><span>Desconto</span><strong>- R$ <%= Number(order.discount || 0).toFixed(2).replace('.', ',') %></strong></div>
+      <div class="summary-line"><span>Frete</span><strong>R$ <%= Number(order.shippingCost || 0).toFixed(2).replace('.', ',') %></strong></div>
+      <div class="summary-line total"><span>Total</span><strong>R$ <%= Number(order.total || 0).toFixed(2).replace('.', ',') %></strong></div>
+      <% if (order.Payment) { %><div class="notice">Pagamento: <%= order.Payment.status %></div><% } %>
+      <% if (order.Shipment) { %><div class="notice">Entrega: <%= order.Shipment.status %></div><% } %>
+    </aside>
+  </div>
+</section>

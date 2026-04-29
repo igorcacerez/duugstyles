@@ -3,6 +3,7 @@ const storeController = require('../controllers/storeController');
 const cartController = require('../controllers/cartController');
 const checkoutController = require('../controllers/checkoutController');
 const authController = require('../controllers/authController');
+const customerController = require('../controllers/customerController');
 const { ensureCustomer } = require('../middlewares/authMiddleware');
 
 const router = Router();
@@ -28,10 +29,12 @@ router.post('/login', authController.login);
 router.get('/cadastro', authController.registerPage);
 router.post('/cadastro', authController.register);
 router.post('/logout', authController.logout);
-router.get('/meus-pedidos', ensureCustomer, (req, res) => res.render('customer/orders', { orders: [] }));
+router.get('/minha-conta', ensureCustomer, customerController.account);
+router.get('/meus-pedidos', ensureCustomer, customerController.orders);
+router.get('/meus-pedidos/:number', ensureCustomer, customerController.order);
 
 ['sobre','contato','politica-de-privacidade','termos-de-uso','trocas-e-devolucoes','faq','recuperar-senha'].forEach((slug)=>{
-  router.get(`/${slug}`,(req,res)=>res.render('store/static',{slug}));
+  router.get(`/${slug}`, storeController.staticPage);
 });
 
 module.exports = router;

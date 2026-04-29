@@ -1,0 +1,21 @@
+<% const action = coupon ? `/admin/cupons/${coupon.id}` : '/admin/cupons'; %>
+<section class="admin-page">
+  <div class="admin-heading">
+    <div><h1><%= coupon ? 'Editar cupom' : 'Novo cupom' %></h1><p>Configure regras de desconto e validade.</p></div>
+    <a class="btn btn-outline-dark" href="/admin/cupons">Voltar</a>
+  </div>
+  <form method="post" action="<%= action %>" class="admin-card admin-form">
+    <div class="admin-form-grid three">
+      <label>Codigo<input class="form-control" name="code" value="<%= coupon?.code || '' %>" required></label>
+      <label>Tipo<select class="form-select" name="type"><option value="percent" <%= coupon?.type === 'percent' ? 'selected' : '' %>>Percentual</option><option value="fixed" <%= coupon?.type === 'fixed' ? 'selected' : '' %>>Valor fixo</option></select></label>
+      <label>Valor<input class="form-control" name="value" value="<%= coupon?.value || '' %>" required></label>
+      <label>Pedido minimo<input class="form-control" name="minOrderValue" value="<%= coupon?.minOrderValue || 0 %>"></label>
+      <label>Maximo de usos<input class="form-control" name="maxUses" value="<%= coupon?.maxUses || '' %>"></label>
+      <label>Usos atuais<input class="form-control" name="uses" value="<%= coupon?.uses || 0 %>"></label>
+      <label>Inicio<input class="form-control" type="datetime-local" name="startsAt"></label>
+      <label>Expira em<input class="form-control" type="datetime-local" name="expiresAt"></label>
+    </div>
+    <div class="switch-row"><label><input type="checkbox" name="isActive" <%= !coupon || coupon?.isActive ? 'checked' : '' %>> Ativo</label></div>
+    <button class="btn btn-gold">Salvar cupom</button>
+  </form>
+</section>

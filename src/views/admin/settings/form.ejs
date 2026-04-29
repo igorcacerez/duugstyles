@@ -1,0 +1,60 @@
+<section class="admin-page">
+  <div class="admin-heading">
+    <div><h1>Configuracoes</h1><p>Controle textos da loja, SEO, campanha relampago, rodape e paginas institucionais.</p></div>
+  </div>
+  <form method="post" action="/admin/configuracoes" class="admin-form">
+    <div class="admin-card admin-form">
+      <h2>SEO global</h2>
+      <div class="admin-form-grid">
+        <label>Titulo do site<input class="form-control" name="site_title" value="<%= settings.site_title %>"></label>
+        <label>Descricao do site<input class="form-control" name="site_description" value="<%= settings.site_description %>"></label>
+      </div>
+    </div>
+
+    <div class="admin-card admin-form">
+      <h2>Hero da home</h2>
+      <div class="admin-form-grid">
+        <label>Eyebrow<input class="form-control" name="hero_eyebrow" value="<%= settings.hero_eyebrow %>"></label>
+        <label>Titulo<input class="form-control" name="hero_title" value="<%= settings.hero_title %>"></label>
+        <label>Descricao<textarea class="form-control" name="hero_description" rows="3"><%= settings.hero_description %></textarea></label>
+        <label>Botao principal<input class="form-control" name="hero_primary_label" value="<%= settings.hero_primary_label %>"></label>
+        <label>Link principal<input class="form-control" name="hero_primary_link" value="<%= settings.hero_primary_link %>"></label>
+        <label>Botao secundario<input class="form-control" name="hero_secondary_label" value="<%= settings.hero_secondary_label %>"></label>
+        <label>Link secundario<input class="form-control" name="hero_secondary_link" value="<%= settings.hero_secondary_link %>"></label>
+      </div>
+    </div>
+
+    <div class="admin-card admin-form">
+      <h2>Promocao relampago</h2>
+      <div class="admin-form-grid">
+        <label>Eyebrow<input class="form-control" name="flash_eyebrow" value="<%= settings.flash_eyebrow %>"></label>
+        <label>Titulo<input class="form-control" name="flash_title" value="<%= settings.flash_title %>"></label>
+        <label>Cupom divulgado<input class="form-control" name="flash_coupon" value="<%= settings.flash_coupon %>"></label>
+        <label>Duracao em minutos<input class="form-control" name="flash_duration_minutes" value="<%= settings.flash_duration_minutes %>"></label>
+        <label>Link da campanha<input class="form-control" name="flash_link" value="<%= settings.flash_link %>"></label>
+      </div>
+    </div>
+
+    <div class="admin-card admin-form">
+      <h2>Topo e rodape</h2>
+      <div class="admin-form-grid">
+        <label>Mensagem frete<input class="form-control" name="trust_shipping" value="<%= settings.trust_shipping %>"></label>
+        <label>Mensagem pagamento<input class="form-control" name="trust_payment" value="<%= settings.trust_payment %>"></label>
+        <label>Mensagem troca<input class="form-control" name="trust_exchange" value="<%= settings.trust_exchange %>"></label>
+        <label>Descricao do rodape<textarea class="form-control" name="footer_description" rows="3"><%= settings.footer_description %></textarea></label>
+      </div>
+    </div>
+
+    <div class="admin-card admin-form">
+      <h2>Paginas institucionais</h2>
+      <% ['sobre','contato','politica_de_privacidade','termos_de_uso','trocas_e_devolucoes','faq','recuperar_senha'].forEach((pageKey) => { %>
+        <div class="admin-form-grid">
+          <label>Titulo <%= pageKey %><input class="form-control" name="page_<%= pageKey %>_title" value="<%= settings[`page_${pageKey}_title`] || '' %>"></label>
+          <label>Conteudo <%= pageKey %><textarea class="form-control" name="page_<%= pageKey %>_body" rows="3"><%= settings[`page_${pageKey}_body`] || '' %></textarea></label>
+        </div>
+      <% }) %>
+    </div>
+
+    <button class="btn btn-gold">Salvar configuracoes</button>
+  </form>
+</section>

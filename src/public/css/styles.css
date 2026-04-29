@@ -1211,6 +1211,91 @@ svg {
   font-weight: 800;
 }
 
+.account-grid {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.account-menu,
+.account-panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--graphite);
+  box-shadow: var(--shadow);
+}
+
+.account-menu {
+  position: sticky;
+  top: 116px;
+  padding: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.account-menu a,
+.account-menu button {
+  width: 100%;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--paper-2);
+  font-weight: 800;
+  text-align: left;
+}
+
+.account-menu a:hover,
+.account-menu button:hover {
+  background: rgba(255,255,255,.06);
+  color: var(--gold-2);
+}
+
+.account-panel {
+  padding: 24px;
+}
+
+.account-panel h2 {
+  margin: 0 0 18px;
+  font-size: 1.6rem;
+  font-weight: 950;
+}
+
+.order-list {
+  display: grid;
+  gap: 10px;
+}
+
+.order-row {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #100f0d;
+}
+
+.order-row span {
+  display: grid;
+  gap: 4px;
+}
+
+.order-row small {
+  color: var(--muted);
+}
+
+.order-row strong:last-child {
+  color: var(--gold-2);
+}
+
 .wishlist-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1437,6 +1522,14 @@ svg {
   .footer-grid {
     grid-template-columns: 1fr;
     gap: 22px;
+  }
+
+  .account-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .account-menu {
+    position: static;
   }
 }
 

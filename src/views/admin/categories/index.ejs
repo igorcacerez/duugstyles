@@ -1,0 +1,25 @@
+<section class="admin-page">
+  <div class="admin-heading">
+    <div><h1>Categorias</h1><p>Organize colecoes e paginas indexaveis.</p></div>
+    <a class="btn btn-gold" href="/admin/categorias/nova">Nova categoria</a>
+  </div>
+  <div class="admin-card">
+    <table class="admin-table">
+      <thead><tr><th>Nome</th><th>Slug</th><th>SEO</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        <% categories.forEach((category) => { %>
+          <tr>
+            <td><strong><%= category.name %></strong></td>
+            <td><%= category.slug %></td>
+            <td><%= category.metaTitle || '-' %></td>
+            <td><span class="status-pill <%= category.isActive ? 'green' : 'red' %>"><%= category.isActive ? 'ativa' : 'inativa' %></span></td>
+            <td class="admin-actions">
+              <a class="btn btn-sm btn-outline-dark" href="/admin/categorias/<%= category.id %>/editar">Editar</a>
+              <form method="post" action="/admin/categorias/<%= category.id %>/remover"><button class="btn btn-sm btn-outline-danger">Desativar</button></form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>

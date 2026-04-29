@@ -1,18 +1,18 @@
 <section class="hero" aria-label="Colecao principal Duug Styles">
-  <div class="hero-bg" style="background-image:url('/public/images/hero-streetwear-duug.png')"></div>
+  <div class="hero-bg" style="background-image:url('<%= assetUrl(heroBanner?.imageUrl, '/public/images/hero-streetwear-duug.png') %>')"></div>
   <div class="container hero-content">
     <div class="hero-copy">
-      <span class="eyebrow">Drop premium masculino</span>
-      <h1>Duug Styles Streetwear Masculino</h1>
-      <p>Camisetas oversized, moletons pesados e pecas urbanas com compra rapida, frete visivel e ofertas para fechar o pedido sem atrito.</p>
+      <span class="eyebrow"><%= heroBanner?.subtitle || settings.hero_eyebrow %></span>
+      <h1><%= heroBanner?.title || settings.hero_title %></h1>
+      <p><%= settings.hero_description %></p>
       <div class="hero-actions">
-        <a class="btn btn-gold" href="/busca">
+        <a class="btn btn-gold" href="<%= heroBanner?.link || settings.hero_primary_link %>">
           <i data-lucide="shopping-bag"></i>
-          Comprar agora
+          <%= settings.hero_primary_label %>
         </a>
-        <a class="btn btn-light-ghost" href="/categoria/camisetas">
+        <a class="btn btn-light-ghost" href="<%= settings.hero_secondary_link %>">
           <i data-lucide="shirt"></i>
-          Ver camisetas
+          <%= settings.hero_secondary_label %>
         </a>
       </div>
       <div class="hero-metrics" aria-label="Beneficios da loja">
@@ -27,15 +27,15 @@
 <section class="flash-strip" aria-label="Promocao relampago">
   <div class="container flash-strip-inner">
     <div>
-      <span class="eyebrow">Promocao relampago</span>
-      <h2>Use FLASH15 antes que o contador zere</h2>
+      <span class="eyebrow"><%= settings.flash_eyebrow %></span>
+      <h2><%= settings.flash_title %></h2>
     </div>
-    <div class="countdown" data-flash-countdown data-duration-minutes="180" aria-live="polite">
+    <div class="countdown" data-flash-countdown data-duration-minutes="<%= settings.flash_duration_minutes %>" aria-live="polite">
       <span data-hours>03</span><small>h</small>
       <span data-minutes>00</span><small>m</small>
       <span data-seconds>00</span><small>s</small>
     </div>
-    <a class="btn btn-ghost" href="/busca?promo=flash">
+    <a class="btn btn-ghost" href="<%= settings.flash_link %>">
       <i data-lucide="flame"></i>
       Ver ofertas
     </a>

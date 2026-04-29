@@ -1,0 +1,50 @@
+<section class="admin-page">
+  <div class="admin-heading">
+    <div><h1><%= order.number %></h1><p><%= order.Customer?.fullName || order.Customer?.email || 'Cliente' %></p></div>
+    <a class="btn btn-outline-dark" href="/admin/pedidos">Voltar</a>
+  </div>
+  <div class="admin-card">
+    <h2>Atualizar operacao</h2>
+    <form method="post" action="/admin/pedidos/<%= order.id %>/status" class="admin-form">
+      <div class="admin-form-grid three">
+        <label>Status do pedido<select class="form-select" name="status">
+          <% ['pending_payment','paid','picking','shipped','delivered','cancelled','refunded'].forEach((status) => { %>
+            <option value="<%= status %>" <%= order.status === status ? 'selected' : '' %>><%= status %></option>
+          <% }) %>
+        </select></label>
+        <label>Status pagamento<select class="form-select" name="paymentStatus">
+          <% ['waiting','paid','cancelled','expired','refunded','failed'].forEach((status) => { %>
+            <option value="<%= status %>" <%= order.Payment?.status === status ? 'selected' : '' %>><%= status %></option>
+          <% }) %>
+        </select></label>
+        <label>Status envio<input class="form-control" name="shipmentStatus" value="<%= order.Shipment?.status || '' %>"></label>
+        <label>Codigo de rastreio<input class="form-control" name="trackingCode" value="<%= order.Shipment?.trackingCode || '' %>"></label>
+      </div>
+      <button class="btn btn-gold">Salvar status</button>
+    </form>
+  </div>
+
+  <div class="admin-card">
+    <h2>Itens</h2>
+    <table class="admin-table">
+      <thead><tr><th>Produto</th><th>Qtd.</th><th>Unitario</th><th>Total</th></tr></thead>
+      <tbody>
+        <% order.OrderItems.forEach((item) => { %>
+          <tr>
+            <td><%= item.productName %></td>
+            <td><%= item.quantity %></td>
+            <td>R$ <%= Number(item.unitPrice || 0).toFixed(2).replace('.', ',') %></td>
+            <td>R$ <%= Number(item.totalPrice || 0).toFixed(2).replace('.', ',') %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric-card"><span>Subtotal</span><strong>R$ <%= Number(order.subtotal || 0).toFixed(2).replace('.', ',') %></strong></div>
+    <div class="metric-card"><span>Desconto</span><strong>R$ <%= Number(order.discount || 0).toFixed(2).replace('.', ',') %></strong></div>
+    <div class="metric-card"><span>Frete</span><strong>R$ <%= Number(order.shippingCost || 0).toFixed(2).replace('.', ',') %></strong></div>
+    <div class="metric-card"><span>Total</span><strong>R$ <%= Number(order.total || 0).toFixed(2).replace('.', ',') %></strong></div>
+  </div>
+</section>

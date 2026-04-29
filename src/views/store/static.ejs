@@ -1,13 +1,13 @@
 <section class="page-hero compact-hero">
   <div class="container">
     <span class="eyebrow">Duug Styles</span>
-    <h1><%= slug.replaceAll('-', ' ') %></h1>
+    <h1><%= page?.title || slug.replaceAll('-', ' ') %></h1>
     <p>Conteudo institucional da loja, preparado para orientar a compra e reforcar confianca.</p>
   </div>
 </section>
 <section class="section">
   <div class="container text-page">
-    <h2>Informacoes da loja</h2>
-    <p>Esta pagina pode ser editada pelo painel administrativo. Use este espaco para politicas, atendimento, trocas, privacidade, termos, perguntas frequentes e dados que ajudem o cliente a comprar com seguranca.</p>
+    <h2><%= page?.title || 'Informacoes da loja' %></h2>
+    <p><%= page?.body || 'Esta pagina pode ser editada pelo painel administrativo.' %></p>
   </div>
 </section>

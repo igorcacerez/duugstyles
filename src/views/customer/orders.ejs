@@ -2,16 +2,27 @@
   <div class="container">
     <span class="eyebrow">Minha conta</span>
     <h1>Meus pedidos</h1>
-    <p>Acompanhe suas compras e continue explorando os drops Duug Styles.</p>
+    <p>Acompanhe status, pagamento e entrega das suas compras.</p>
   </div>
 </section>
 <section class="section">
   <div class="container">
-    <div class="empty-state full">
-      <i data-lucide="package"></i>
-      <h2>Voce ainda nao possui pedidos</h2>
-      <p>Use compra rapida para finalizar seu primeiro pedido.</p>
-      <a class="btn btn-gold" href="/busca">Comprar agora</a>
-    </div>
+    <% if (orders.length) { %>
+      <div class="order-list">
+        <% orders.forEach((order) => { %>
+          <a class="order-row" href="/meus-pedidos/<%= order.number %>">
+            <span><strong><%= order.number %></strong><small><%= order.OrderItems?.length || 0 %> item(ns) · <%= order.status %></small></span>
+            <strong>R$ <%= Number(order.total || 0).toFixed(2).replace('.', ',') %></strong>
+          </a>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <div class="empty-state full">
+        <i data-lucide="package"></i>
+        <h2>Voce ainda nao possui pedidos</h2>
+        <p>Use compra rapida para finalizar seu primeiro pedido.</p>
+        <a class="btn btn-gold" href="/busca">Comprar agora</a>
+      </div>
+    <% } %>
   </div>
 </section>

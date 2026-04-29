@@ -1,0 +1,38 @@
+<section class="page-hero compact-hero">
+  <div class="container">
+    <span class="eyebrow">Minha conta</span>
+    <h1>Ola, <%= customer.fullName || customer.email %></h1>
+    <p>Acompanhe pedidos, continue comprando e mantenha seus dados atualizados.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container account-grid">
+    <aside class="account-menu">
+      <a href="/minha-conta"><i data-lucide="user"></i> Visao geral</a>
+      <a href="/meus-pedidos"><i data-lucide="package"></i> Meus pedidos</a>
+      <a href="/favoritos"><i data-lucide="heart"></i> Favoritos</a>
+      <form method="post" action="/logout"><button type="submit"><i data-lucide="log-out"></i> Sair</button></form>
+    </aside>
+    <div class="account-panel">
+      <h2>Ultimos pedidos</h2>
+      <% if (orders.length) { %>
+        <div class="order-list">
+          <% orders.forEach((order) => { %>
+            <a class="order-row" href="/meus-pedidos/<%= order.number %>">
+              <span><strong><%= order.number %></strong><small><%= order.status %></small></span>
+              <strong>R$ <%= Number(order.total || 0).toFixed(2).replace('.', ',') %></strong>
+            </a>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <i data-lucide="package"></i>
+          <h2>Nenhum pedido ainda</h2>
+          <p>Quando voce comprar, seus pedidos aparecerao aqui.</p>
+          <a href="/busca" class="btn btn-gold">Comprar agora</a>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</section>

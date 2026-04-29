@@ -1,4 +1,4 @@
-const { Op, col } = require('sequelize');
+const { Op } = require('sequelize');
 const { Coupon } = require('../models');
 const { calculateCartTotals } = require('../helpers/cartTotals');
 const melhorEnvioService = require('../services/melhorEnvioService');
@@ -26,13 +26,17 @@ async function findCoupon(code, subtotal) {
       [Op.and]: [
         { [Op.or]: [{ startsAt: null }, { startsAt: { [Op.lte]: now } }] },
         { [Op.or]: [{ expiresAt: null }, { expiresAt: { [Op.gte]: now } }] },
-        { [Op.or]: [{ maxUses: null }, { maxUses: { [Op.gt]: col('uses') } }] },
         { [Op.or]: [{ minOrderValue: null }, { minOrderValue: { [Op.lte]: subtotal } }] }
       ]
     }
   });
 
-  if (dbCoupon) return { coupon: normalizeCoupon(dbCoupon), message: 'Cupom aplicado.' };
+  if (dbCoupon) {
+    if (dbCoupon.maxUses && Number(dbCoupon.uses || 0) >= Number(dbCoupon.maxUses)) {
+      return { coupon: null, message: 'Cupom esgotado.' };
+    }
+    return { coupon: normalizeCoupon(dbCoupon), message: 'Cupom aplicado.' };
+  }
 
   const fallbackCoupons = {
     DUUG10: { code: 'DUUG10', type: 'percent', value: 10, label: '10% OFF' },

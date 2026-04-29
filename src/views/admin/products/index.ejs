@@ -1,1 +1,28 @@
-<div class="container py-4"><h1>Produtos</h1><a href="/admin/produtos/novo" class="btn btn-gold mb-3">Novo produto</a><table class="table table-dark"><tr><th>Nome</th><th>Categoria</th><th>Preço</th></tr><% products.forEach(p=>{ %><tr><td><%= p.name %></td><td><%= p.Category?.name || '-' %></td><td>R$ <%= p.price %></td></tr><% }) %></table></div>
+<section class="admin-page">
+  <div class="admin-heading">
+    <div>
+      <h1>Produtos</h1>
+      <p>Catalogo, SEO, precos, imagens e status de venda.</p>
+    </div>
+    <a href="/admin/produtos/novo" class="btn btn-gold">Novo produto</a>
+  </div>
+  <div class="admin-card">
+    <table class="admin-table">
+      <thead><tr><th>Nome</th><th>Categoria</th><th>Preco</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        <% products.forEach((p) => { %>
+          <tr>
+            <td><strong><%= p.name %></strong><br><small><%= p.slug %></small></td>
+            <td><%= p.Category?.name || '-' %></td>
+            <td>R$ <%= Number(p.promoPrice || p.price || 0).toFixed(2).replace('.', ',') %></td>
+            <td><span class="status-pill <%= p.isActive ? 'green' : 'red' %>"><%= p.isActive ? 'ativo' : 'inativo' %></span></td>
+            <td class="admin-actions">
+              <a class="btn btn-sm btn-outline-dark" href="/admin/produtos/<%= p.id %>/editar">Editar</a>
+              <form method="post" action="/admin/produtos/<%= p.id %>/remover"><button class="btn btn-sm btn-outline-danger">Desativar</button></form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>

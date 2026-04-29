@@ -51,9 +51,9 @@
 <body>
   <div class="topbar">
     <div class="container topbar-inner">
-      <span>Frete calculado no produto</span>
-      <span>Compra rapida e pagamento seguro</span>
-      <span>Troca facil em ate 7 dias</span>
+      <span><%= storeSettings.trust_shipping %></span>
+      <span><%= storeSettings.trust_payment %></span>
+      <span><%= storeSettings.trust_exchange %></span>
     </div>
   </div>
   <nav class="navbar navbar-expand-lg storefront-nav sticky-top">
@@ -66,6 +66,9 @@
         <input name="q" type="search" placeholder="Buscar camiseta, moletom..." aria-label="Buscar produtos">
       </form>
       <div class="nav-actions">
+        <a class="nav-icon-link" href="/minha-conta" aria-label="Minha conta">
+          <i data-lucide="user"></i>
+        </a>
         <a class="nav-icon-link" href="/favoritos" aria-label="Lista de desejos">
           <i data-lucide="heart"></i>
           <span class="wishlist-count" data-wishlist-count>0</span>
@@ -83,7 +86,7 @@
     <div class="container footer-grid">
       <div>
         <a class="brand-mark footer-brand" href="/"><span>DUUG</span><strong>STYLES</strong></a>
-        <p>Streetwear masculino premium para quem quer comprar rapido, vestir melhor e receber com previsibilidade.</p>
+        <p><%= storeSettings.footer_description %></p>
       </div>
       <div>
         <h2>Loja</h2>

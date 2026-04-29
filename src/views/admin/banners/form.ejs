@@ -1,0 +1,19 @@
+<% const action = banner ? `/admin/banners/${banner.id}` : '/admin/banners'; %>
+<section class="admin-page">
+  <div class="admin-heading">
+    <div><h1><%= banner ? 'Editar banner' : 'Novo banner' %></h1><p>Configure imagem, texto e destino da campanha.</p></div>
+    <a class="btn btn-outline-dark" href="/admin/banners">Voltar</a>
+  </div>
+  <form method="post" action="<%= action %>" class="admin-card admin-form">
+    <div class="admin-form-grid">
+      <label>Titulo<input class="form-control" name="title" value="<%= banner?.title || '' %>" required></label>
+      <label>Subtitulo<input class="form-control" name="subtitle" value="<%= banner?.subtitle || '' %>"></label>
+      <label>Imagem URL<input class="form-control" name="imageUrl" value="<%= banner?.imageUrl || '/public/images/hero-streetwear-duug.png' %>" required></label>
+      <label>Link<input class="form-control" name="link" value="<%= banner?.link || '/busca' %>"></label>
+      <label>Posicao<input class="form-control" name="position" value="<%= banner?.position || 'hero' %>"></label>
+      <label>Ordem<input class="form-control" name="sortOrder" type="number" value="<%= banner?.sortOrder || 0 %>"></label>
+    </div>
+    <div class="switch-row"><label><input type="checkbox" name="isActive" <%= !banner || banner?.isActive ? 'checked' : '' %>> Ativo</label></div>
+    <button class="btn btn-gold">Salvar banner</button>
+  </form>
+</section>

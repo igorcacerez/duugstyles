@@ -1,1 +1,47 @@
-<div class="container py-4"><h1>Novo produto</h1><form method="post" action="/admin/produtos" class="row g-2"><div class="col-md-6"><input class="form-control" name="name" placeholder="Nome" required></div><div class="col-md-6"><input class="form-control" name="price" placeholder="Preço" required></div><div class="col-md-6"><select class="form-select" name="categoryId"><% categories.forEach(c=>{ %><option value="<%= c.id %>"><%= c.name %></option><% }) %></select></div><div class="col-md-6"><input class="form-control" name="slug" placeholder="Slug"></div><div class="col-12"><button class="btn btn-gold">Salvar</button></div></form></div>
+<%
+  const action = product ? `/admin/produtos/${product.id}` : '/admin/produtos';
+  const image = product?.ProductImages?.find((img) => img.isMain) || product?.ProductImages?.[0];
+%>
+<section class="admin-page">
+  <div class="admin-heading">
+    <div>
+      <h1><%= product ? 'Editar produto' : 'Novo produto' %></h1>
+      <p>Configure dados comerciais, SEO, imagem principal e exibicao na vitrine.</p>
+    </div>
+    <a class="btn btn-outline-dark" href="/admin/produtos">Voltar</a>
+  </div>
+  <form method="post" action="<%= action %>" class="admin-card admin-form">
+    <div class="admin-form-grid">
+      <label>Nome<input class="form-control" name="name" value="<%= product?.name || '' %>" required></label>
+      <label>Slug<input class="form-control" name="slug" value="<%= product?.slug || '' %>" placeholder="gerado automaticamente"></label>
+      <label>Categoria<select class="form-select" name="categoryId"><% categories.forEach((c) => { %><option value="<%= c.id %>" <%= product?.categoryId === c.id ? 'selected' : '' %>><%= c.name %></option><% }) %></select></label>
+      <label>Preco<input class="form-control" name="price" value="<%= product?.price || '' %>" required></label>
+      <label>Preco promocional<input class="form-control" name="promoPrice" value="<%= product?.promoPrice || '' %>"></label>
+      <label>Custo<input class="form-control" name="cost" value="<%= product?.cost || '' %>"></label>
+    </div>
+    <label>Descricao curta<textarea class="form-control" name="descriptionShort" rows="2"><%= product?.descriptionShort || '' %></textarea></label>
+    <label>Descricao completa<textarea class="form-control" name="descriptionLong" rows="4"><%= product?.descriptionLong || '' %></textarea></label>
+    <div class="admin-form-grid">
+      <label>Imagem principal URL<input class="form-control" name="imageUrl" value="<%= image?.imageUrl || '/public/images/promo-flatlay-duug.png' %>"></label>
+      <label>Texto alt da imagem<input class="form-control" name="altText" value="<%= image?.altText || product?.name || '' %>"></label>
+    </div>
+    <div class="admin-form-grid">
+      <label>Meta title<input class="form-control" name="metaTitle" value="<%= product?.metaTitle || '' %>"></label>
+      <label>Meta description<input class="form-control" name="metaDescription" value="<%= product?.metaDescription || '' %>"></label>
+      <label>Palavras-chave<input class="form-control" name="keywords" value="<%= product?.keywords || '' %>"></label>
+    </div>
+    <div class="admin-form-grid three">
+      <label>Peso<input class="form-control" name="weight" value="<%= product?.weight || '' %>"></label>
+      <label>Altura<input class="form-control" name="height" value="<%= product?.height || '' %>"></label>
+      <label>Largura<input class="form-control" name="width" value="<%= product?.width || '' %>"></label>
+      <label>Comprimento<input class="form-control" name="length" value="<%= product?.length || '' %>"></label>
+    </div>
+    <div class="switch-row">
+      <label><input type="checkbox" name="isFeatured" <%= product?.isFeatured ? 'checked' : '' %>> Destaque</label>
+      <label><input type="checkbox" name="isNew" <%= !product || product?.isNew ? 'checked' : '' %>> Novo</label>
+      <label><input type="checkbox" name="isBestSeller" <%= product?.isBestSeller ? 'checked' : '' %>> Mais vendido</label>
+      <label><input type="checkbox" name="isActive" <%= !product || product?.isActive ? 'checked' : '' %>> Ativo</label>
+    </div>
+    <button class="btn btn-gold">Salvar produto</button>
+  </form>
+</section>

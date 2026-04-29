@@ -1,1 +1,40 @@
-<div class="container py-4"><h1>Painel administrativo</h1><div class="row g-3"><div class="col-md-4"><div class="card p-3"><h2 class="h6">Produtos</h2><strong><%= stats.products %></strong></div></div><div class="col-md-4"><div class="card p-3"><h2 class="h6">Pedidos</h2><strong><%= stats.orders %></strong></div></div><div class="col-md-4"><div class="card p-3"><h2 class="h6">Clientes</h2><strong><%= stats.customers %></strong></div></div></div><a class="btn btn-gold mt-3" href="/admin/produtos">Gerenciar produtos</a></div>
+<section class="admin-page">
+  <div class="admin-heading">
+    <div>
+      <h1>Dashboard</h1>
+      <p>Visao geral de vendas, catalogo e operacao da loja.</p>
+    </div>
+    <a class="btn btn-gold" href="/admin/produtos/novo">Novo produto</a>
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric-card"><span>Produtos</span><strong><%= stats.products %></strong></div>
+    <div class="metric-card"><span>Pedidos</span><strong><%= stats.orders %></strong></div>
+    <div class="metric-card"><span>Clientes</span><strong><%= stats.customers %></strong></div>
+    <div class="metric-card"><span>Receita paga</span><strong>R$ <%= stats.revenue.toFixed(2).replace('.', ',') %></strong></div>
+  </div>
+
+  <div class="admin-card">
+    <div class="admin-heading">
+      <div>
+        <h1>Pedidos recentes</h1>
+        <p>Atalhos para separacao, pagamento e entrega.</p>
+      </div>
+      <a class="btn btn-outline-dark" href="/admin/pedidos">Ver pedidos</a>
+    </div>
+    <table class="admin-table">
+      <thead><tr><th>Pedido</th><th>Cliente</th><th>Status</th><th>Total</th><th></th></tr></thead>
+      <tbody>
+        <% recentOrders.forEach((order) => { %>
+          <tr>
+            <td><strong><%= order.number %></strong></td>
+            <td><%= order.Customer?.fullName || order.Customer?.email || '-' %></td>
+            <td><span class="status-pill"><%= order.status %></span></td>
+            <td>R$ <%= Number(order.total || 0).toFixed(2).replace('.', ',') %></td>
+            <td><a class="btn btn-sm btn-outline-dark" href="/admin/pedidos/<%= order.id %>">Abrir</a></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>

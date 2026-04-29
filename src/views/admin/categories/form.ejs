@@ -1,0 +1,20 @@
+<% const action = category ? `/admin/categorias/${category.id}` : '/admin/categorias'; %>
+<section class="admin-page">
+  <div class="admin-heading">
+    <div><h1><%= category ? 'Editar categoria' : 'Nova categoria' %></h1><p>Configure nome, URL e conteudo SEO.</p></div>
+    <a class="btn btn-outline-dark" href="/admin/categorias">Voltar</a>
+  </div>
+  <form method="post" action="<%= action %>" class="admin-card admin-form">
+    <div class="admin-form-grid">
+      <label>Nome<input class="form-control" name="name" value="<%= category?.name || '' %>" required></label>
+      <label>Slug<input class="form-control" name="slug" value="<%= category?.slug || '' %>"></label>
+    </div>
+    <label>Texto SEO<textarea class="form-control" name="seoText" rows="4"><%= category?.seoText || '' %></textarea></label>
+    <div class="admin-form-grid">
+      <label>Meta title<input class="form-control" name="metaTitle" value="<%= category?.metaTitle || '' %>"></label>
+      <label>Meta description<input class="form-control" name="metaDescription" value="<%= category?.metaDescription || '' %>"></label>
+    </div>
+    <div class="switch-row"><label><input type="checkbox" name="isActive" <%= !category || category?.isActive ? 'checked' : '' %>> Ativa</label></div>
+    <button class="btn btn-gold">Salvar categoria</button>
+  </form>
+</section>

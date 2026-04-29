@@ -1,0 +1,21 @@
+<section class="admin-page">
+  <div class="admin-heading">
+    <div><h1>Clientes</h1><p>Base de compradores, bloqueio e historico de pedidos.</p></div>
+  </div>
+  <div class="admin-card">
+    <table class="admin-table">
+      <thead><tr><th>Cliente</th><th>Contato</th><th>Pedidos</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        <% customers.forEach((customer) => { %>
+          <tr>
+            <td><strong><%= customer.fullName || '-' %></strong><br><small><%= customer.cpfCnpj || '' %></small></td>
+            <td><%= customer.email %><br><small><%= customer.phone || '-' %></small></td>
+            <td><%= customer.Orders?.length || 0 %></td>
+            <td><span class="status-pill <%= customer.isBlocked ? 'red' : 'green' %>"><%= customer.isBlocked ? 'bloqueado' : 'ativo' %></span></td>
+            <td><a class="btn btn-sm btn-outline-dark" href="/admin/clientes/<%= customer.id %>">Abrir</a></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>

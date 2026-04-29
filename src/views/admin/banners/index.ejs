@@ -1,0 +1,26 @@
+<section class="admin-page">
+  <div class="admin-heading">
+    <div><h1>Banners</h1><p>Controle hero, vitrines e campanhas.</p></div>
+    <a class="btn btn-gold" href="/admin/banners/novo">Novo banner</a>
+  </div>
+  <div class="admin-card">
+    <table class="admin-table">
+      <thead><tr><th>Titulo</th><th>Posicao</th><th>Link</th><th>Ordem</th><th>Status</th><th></th></tr></thead>
+      <tbody>
+        <% banners.forEach((banner) => { %>
+          <tr>
+            <td><strong><%= banner.title %></strong><br><small><%= banner.subtitle || '-' %></small></td>
+            <td><%= banner.position %></td>
+            <td><%= banner.link || '-' %></td>
+            <td><%= banner.sortOrder %></td>
+            <td><span class="status-pill <%= banner.isActive ? 'green' : 'red' %>"><%= banner.isActive ? 'ativo' : 'inativo' %></span></td>
+            <td class="admin-actions">
+              <a class="btn btn-sm btn-outline-dark" href="/admin/banners/<%= banner.id %>/editar">Editar</a>
+              <form method="post" action="/admin/banners/<%= banner.id %>/remover"><button class="btn btn-sm btn-outline-danger">Desativar</button></form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>

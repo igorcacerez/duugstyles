@@ -9,6 +9,7 @@ const methodOverride = require('method-override');
 const expressLayouts = require('express-ejs-layouts');
 const env = require('./config/env');
 const { Product, Category } = require('./models');
+const settingsService = require('./services/settingsService');
 const storeRoutes = require('./routes/storeRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const errorMiddleware = require('./middlewares/errorMiddleware');
@@ -31,20 +32,25 @@ app.use(session({ secret: env.sessionSecret, resave: false, saveUninitialized: f
 app.use('/login', rateLimit({ windowMs: 15 * 60 * 1000, limit: 30 }));
 app.use('/checkout', rateLimit({ windowMs: 15 * 60 * 1000, limit: 50 }));
 
-app.use((req, res, next) => {
-  res.locals.brand = 'Duug Styles';
-  res.locals.path = req.path;
-  res.locals.appUrl = env.app.url;
-  res.locals.meta = null;
-  res.locals.cartCount = (req.session.cart || []).reduce((sum, item) => sum + Number(item.quantity || 1), 0);
-  res.locals.assetUrl = (assetPath, fallback = '/public/images/promo-flatlay-duug.png') => {
-    const finalPath = assetPath || fallback;
-    if (/^https?:\/\//i.test(finalPath)) return finalPath;
-    if (finalPath.startsWith('/public/')) return finalPath;
-    if (finalPath.startsWith('/images/')) return `/public${finalPath}`;
-    return finalPath;
-  };
-  next();
+app.use(async (req, res, next) => {
+  try {
+    res.locals.brand = 'Duug Styles';
+    res.locals.path = req.path;
+    res.locals.appUrl = env.app.url;
+    res.locals.meta = null;
+    res.locals.storeSettings = await settingsService.all();
+    res.locals.cartCount = (req.session.cart || []).reduce((sum, item) => sum + Number(item.quantity || 1), 0);
+    res.locals.assetUrl = (assetPath, fallback = '/public/images/promo-flatlay-duug.png') => {
+      const finalPath = assetPath || fallback;
+      if (/^https?:\/\//i.test(finalPath)) return finalPath;
+      if (finalPath.startsWith('/public/')) return finalPath;
+      if (finalPath.startsWith('/images/')) return `/public${finalPath}`;
+      return finalPath;
+    };
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
 app.get('/robots.txt', (req, res) => res.type('text/plain').send('User-agent: *\nAllow: /\nSitemap: ' + env.app.url + '/sitemap.xml'));
