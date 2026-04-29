@@ -1,1 +1,84 @@
-<div class="container py-5"><h1>Carrinho</h1><% cart.forEach((item,idx)=>{ %><div class="d-flex justify-content-between border-bottom py-2"><span><%= item.name %> x <%= item.quantity %></span><span>R$ <%= (item.price*item.quantity).toFixed(2) %></span><form action="/carrinho/remover/<%= idx %>" method="post"><button class="btn btn-sm btn-outline-light">Remover</button></form></div><% }) %><p class="mt-3">Subtotal: <strong class="price">R$ <%= subtotal.toFixed(2) %></strong></p><form action="/carrinho/frete" method="post" class="d-flex gap-2"><input name="zipcode" class="form-control" placeholder="CEP"><button class="btn btn-outline-light">Calcular frete</button></form><% shippingOptions.forEach(s=>{ %><div><%= s.service %> - R$ <%= s.price %> (<%= s.days %> dias)</div><% }) %><a href="/checkout" class="btn btn-gold mt-3">Finalizar compra</a></div>
+<section class="page-hero compact-hero">
+  <div class="container">
+    <span class="eyebrow">Carrinho</span>
+    <h1>Revise seu pedido</h1>
+    <p>Confira produtos, aplique cupom, calcule frete e avance para o checkout.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container cart-layout">
+    <% if (cart.length) { %>
+      <div class="cart-items">
+        <% cart.forEach((item, idx) => { %>
+          <article class="cart-item">
+            <img src="<%= assetUrl(item.image) %>" alt="<%= item.name %>" loading="lazy">
+            <div>
+              <h2><%= item.name %></h2>
+              <p>
+                <% if (item.size) { %>Tamanho <%= item.size %> · <% } %>
+                Quantidade <%= item.quantity %>
+              </p>
+              <strong>R$ <%= (Number(item.price) * Number(item.quantity)).toFixed(2).replace('.', ',') %></strong>
+            </div>
+            <form action="/carrinho/remover/<%= idx %>" method="post">
+              <button class="btn btn-ghost btn-compact" type="submit">
+                <i data-lucide="trash-2"></i>
+                Remover
+              </button>
+            </form>
+          </article>
+        <% }) %>
+      </div>
+
+      <aside class="order-summary">
+        <h2>Resumo da compra</h2>
+        <% if (couponMessage) { %><div class="notice"><%= couponMessage %></div><% } %>
+        <div class="summary-line"><span>Subtotal</span><strong>R$ <%= subtotal.toFixed(2).replace('.', ',') %></strong></div>
+        <div class="summary-line"><span>Desconto</span><strong>- R$ <%= discount.toFixed(2).replace('.', ',') %></strong></div>
+        <div class="summary-line total"><span>Total</span><strong>R$ <%= total.toFixed(2).replace('.', ',') %></strong></div>
+
+        <form action="/carrinho/cupom" method="post" class="coupon-form">
+          <label class="field-label" for="coupon">Cupom de desconto</label>
+          <div>
+            <input id="coupon" class="form-control" name="code" value="<%= coupon?.code || '' %>" placeholder="DUUG10, FLASH15">
+            <button class="btn btn-dark-action" type="submit">Aplicar</button>
+          </div>
+        </form>
+        <% if (coupon) { %>
+          <form action="/carrinho/cupom/remover" method="post">
+            <button class="link-button" type="submit">Remover cupom <%= coupon.code %></button>
+          </form>
+        <% } %>
+
+        <form action="/carrinho/frete" method="post" class="freight-form cart-freight">
+          <input name="zipcode" class="form-control" placeholder="CEP" inputmode="numeric" autocomplete="postal-code">
+          <button class="btn btn-ghost" type="submit">
+            <i data-lucide="truck"></i>
+            Calcular
+          </button>
+        </form>
+        <% if (shippingOptions.length) { %>
+          <div class="freight-results show">
+            <% shippingOptions.forEach((s) => { %>
+              <div><strong><%= s.service %></strong><span>R$ <%= Number(s.price).toFixed(2).replace('.', ',') %> · <%= s.days %> dias</span></div>
+            <% }) %>
+          </div>
+        <% } %>
+
+        <a href="/checkout" class="btn btn-gold checkout-button">
+          <i data-lucide="credit-card"></i>
+          Finalizar compra
+        </a>
+        <a href="/busca" class="text-link summary-link">Continuar comprando</a>
+      </aside>
+    <% } else { %>
+      <div class="empty-state full">
+        <i data-lucide="shopping-bag"></i>
+        <h2>Seu carrinho esta vazio</h2>
+        <p>Explore os drops e use compra rapida para ir direto ao checkout.</p>
+        <a class="btn btn-gold" href="/busca">Comprar agora</a>
+      </div>
+    <% } %>
+  </div>
+</section>

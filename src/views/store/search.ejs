@@ -1,1 +1,37 @@
-<div class="container py-5"><h1>Busca</h1><form class="mb-3"><input class="form-control" name="q" value="<%= q %>" placeholder="Buscar produtos"></form><div class="row g-3"><% products.forEach(p=>{ %><div class="col-6 col-md-3"><div class="product-card p-3"><h2 class="h6"><%= p.name %></h2><a href="/produto/<%= p.slug %>" class="btn btn-gold btn-sm">Ver</a></div></div><% }) %></div></div>
+<section class="page-hero compact-hero">
+  <div class="container">
+    <span class="eyebrow">Busca inteligente</span>
+    <h1>Encontre seu proximo streetwear</h1>
+    <p>Pesquise por camiseta, moletom, oversized, cor ou palavra-chave.</p>
+    <form class="search-panel" action="/busca" method="get">
+      <i data-lucide="search"></i>
+      <input class="form-control" name="q" value="<%= q %>" placeholder="Buscar produtos" autofocus>
+      <button class="btn btn-gold" type="submit">Buscar</button>
+    </form>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-heading">
+      <div>
+        <span class="eyebrow"><%= products.length %> resultado(s)</span>
+        <h2><%= q ? `Resultados para "${q}"` : 'Todos os produtos' %></h2>
+      </div>
+    </div>
+    <% if (products.length) { %>
+      <div class="product-grid">
+        <% products.forEach((p) => { %>
+          <%- include('../partials/product-card', { product: p }) %>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <div class="empty-state">
+        <i data-lucide="search-x"></i>
+        <h2>Nenhum produto encontrado</h2>
+        <p>Tente buscar por camiseta, moletom ou streetwear.</p>
+        <a class="btn btn-gold" href="/busca">Ver todos</a>
+      </div>
+    <% } %>
+  </div>
+</section>

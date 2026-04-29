@@ -1,1 +1,37 @@
-<div class="container py-5"><h1><%= category?.name || 'Categoria' %></h1><div class="row g-3"><% products.forEach(p=>{ %><div class="col-6 col-md-3"><div class="product-card p-3"><h2 class="h6"><%= p.name %></h2><p class="price">R$ <%= p.promoPrice || p.price %></p><a href="/produto/<%= p.slug %>" class="btn btn-gold btn-sm">Comprar</a></div></div><% }) %></div></div>
+<section class="page-hero category-hero">
+  <div class="container">
+    <nav class="breadcrumb-line" aria-label="breadcrumb">
+      <a href="/">Home</a>
+      <span>/</span>
+      <strong><%= category.name %></strong>
+    </nav>
+    <span class="eyebrow">Categoria Duug Styles</span>
+    <h1><%= category.name %></h1>
+    <p><%= category.seoText || 'Pecas streetwear masculinas com modelagem atual, tecido premium e compra rapida.' %></p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-heading">
+      <div>
+        <span class="eyebrow"><%= products.length %> produto(s)</span>
+        <h2>Escolha, calcule o frete e compre</h2>
+      </div>
+    </div>
+    <% if (products.length) { %>
+      <div class="product-grid">
+        <% products.forEach((p) => { %>
+          <%- include('../partials/product-card', { product: p }) %>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <div class="empty-state">
+        <i data-lucide="package-search"></i>
+        <h2>Categoria sem produtos ativos</h2>
+        <p>Veja outros drops disponiveis na loja.</p>
+        <a class="btn btn-gold" href="/busca">Ver produtos</a>
+      </div>
+    <% } %>
+  </div>
+</section>

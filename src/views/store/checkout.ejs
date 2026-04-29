@@ -1,1 +1,48 @@
-<div class="container py-5"><h1>Checkout</h1><form action="/checkout" method="post" class="row g-2"><div class="col-md-6"><input class="form-control" name="fullName" placeholder="Nome completo" required></div><div class="col-md-6"><input class="form-control" name="email" type="email" placeholder="E-mail" required></div><div class="col-md-6"><select class="form-select" name="paymentMethod"><option value="credit_card">Cartão</option><option value="pix">PIX</option><option value="boleto">Boleto</option></select></div><div class="col-md-6"><input class="form-control" name="total" placeholder="Total" required></div><div class="col-12"><button class="btn btn-gold" data-loading>Confirmar pedido</button></div></form></div>
+<section class="page-hero compact-hero">
+  <div class="container">
+    <span class="eyebrow">Checkout seguro</span>
+    <h1>Finalize sua compra</h1>
+    <p>Dados essenciais, resumo claro e pagamento em poucos passos.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container checkout-layout">
+    <form action="/checkout" method="post" class="checkout-form" data-loading-form>
+      <h2>Dados do comprador</h2>
+      <div class="form-grid">
+        <label>Nome completo<input class="form-control" name="fullName" autocomplete="name" required></label>
+        <label>E-mail<input class="form-control" name="email" type="email" autocomplete="email" required></label>
+        <label>Telefone<input class="form-control" name="phone" inputmode="tel" autocomplete="tel" placeholder="(00) 00000-0000"></label>
+        <label>CEP<input class="form-control" name="zipcode" inputmode="numeric" autocomplete="postal-code" placeholder="00000-000"></label>
+      </div>
+
+      <h2>Pagamento</h2>
+      <div class="payment-options">
+        <label><input type="radio" name="paymentMethod" value="pix" checked><span><i data-lucide="qr-code"></i> PIX</span></label>
+        <label><input type="radio" name="paymentMethod" value="credit_card"><span><i data-lucide="credit-card"></i> Cartao</span></label>
+        <label><input type="radio" name="paymentMethod" value="boleto"><span><i data-lucide="barcode"></i> Boleto</span></label>
+      </div>
+
+      <input type="hidden" name="total" value="<%= total.toFixed(2) %>">
+      <button class="btn btn-gold checkout-button" type="submit">
+        <i data-lucide="lock"></i>
+        Confirmar pedido
+      </button>
+    </form>
+
+    <aside class="order-summary">
+      <h2>Seu pedido</h2>
+      <% cart.forEach((item) => { %>
+        <div class="mini-item">
+          <span><%= item.name %> x <%= item.quantity %></span>
+          <strong>R$ <%= (Number(item.price) * Number(item.quantity)).toFixed(2).replace('.', ',') %></strong>
+        </div>
+      <% }) %>
+      <div class="summary-line"><span>Subtotal</span><strong>R$ <%= subtotal.toFixed(2).replace('.', ',') %></strong></div>
+      <div class="summary-line"><span>Desconto</span><strong>- R$ <%= discount.toFixed(2).replace('.', ',') %></strong></div>
+      <% if (coupon) { %><div class="notice">Cupom <%= coupon.code %> aplicado</div><% } %>
+      <div class="summary-line total"><span>Total</span><strong>R$ <%= total.toFixed(2).replace('.', ',') %></strong></div>
+    </aside>
+  </div>
+</section>

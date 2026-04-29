@@ -1,0 +1,45 @@
+<%
+  const image = assetUrl(product.ProductImages?.[0]?.imageUrl);
+  const price = Number(product.promoPrice || product.price || 0);
+  const originalPrice = Number(product.price || 0);
+  const hasPromo = product.promoPrice && Number(product.promoPrice) < originalPrice;
+%>
+<article class="product-card h-100" data-product-card>
+  <div class="product-media">
+    <a href="/produto/<%= product.slug %>" aria-label="Ver <%= product.name %>">
+      <img src="<%= image %>" alt="<%= product.name %>" loading="lazy">
+    </a>
+    <% if (hasPromo) { %>
+      <span class="product-badge">Oferta</span>
+    <% } else if (product.isNew) { %>
+      <span class="product-badge product-badge-soft">Novo</span>
+    <% } %>
+    <button class="icon-action wishlist-toggle" type="button" aria-label="Adicionar <%= product.name %> aos favoritos" data-wishlist data-id="<%= product.slug %>" data-name="<%= product.name %>" data-price="<%= price.toFixed(2) %>" data-url="/produto/<%= product.slug %>" data-image="<%= image %>">
+      <i data-lucide="heart"></i>
+    </button>
+  </div>
+  <div class="product-info">
+    <a class="product-title" href="/produto/<%= product.slug %>"><%= product.name %></a>
+    <p class="product-summary"><%= product.descriptionShort || 'Peca streetwear premium com caimento urbano.' %></p>
+    <div class="product-price-row">
+      <strong class="price">R$ <%= price.toFixed(2).replace('.', ',') %></strong>
+      <% if (hasPromo) { %><span class="old-price">R$ <%= originalPrice.toFixed(2).replace('.', ',') %></span><% } %>
+    </div>
+    <div class="installment">em ate 3x sem juros</div>
+    <form action="/carrinho" method="post" class="product-actions" data-loading-form>
+      <input type="hidden" name="name" value="<%= product.name %>">
+      <input type="hidden" name="slug" value="<%= product.slug %>">
+      <input type="hidden" name="price" value="<%= price.toFixed(2) %>">
+      <input type="hidden" name="quantity" value="1">
+      <input type="hidden" name="image" value="<%= image %>">
+      <input type="hidden" name="buyNow" value="1">
+      <button class="btn btn-gold btn-compact" type="submit">
+        <i data-lucide="zap"></i>
+        Compra rapida
+      </button>
+      <a class="btn btn-ghost btn-compact" href="/produto/<%= product.slug %>" aria-label="Ver detalhes de <%= product.name %>">
+        <i data-lucide="eye"></i>
+      </a>
+    </form>
+  </div>
+</article>

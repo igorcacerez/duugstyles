@@ -1,2 +1,169 @@
-<div class="container py-5"><div class="row"><div class="col-md-6"><img src="/public/images/product-placeholder.jpg" class="img-fluid" alt="<%= product?.name %>" loading="lazy"></div><div class="col-md-6"><h1><%= product?.name %></h1><p><%= product?.descriptionShort %></p><p class="price fs-3">R$ <%= product?.promoPrice || product?.price %></p><form action="/carrinho" method="post"><input type="hidden" name="name" value="<%= product?.name %>"><input type="hidden" name="price" value="<%= product?.promoPrice || product?.price %>"><input class="form-control mb-2" type="number" name="quantity" value="1" min="1"><button class="btn btn-gold" data-loading>Adicionar ao carrinho</button></form></div></div></div>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Product","name":"<%= product?.name %>","description":"<%= product?.descriptionShort %>","offers":{"@type":"Offer","price":"<%= product?.promoPrice || product?.price %>","priceCurrency":"BRL"}}</script>
+<%
+  const image = assetUrl(product.ProductImages?.[0]?.imageUrl);
+  const price = Number(product.promoPrice || product.price || 0);
+  const originalPrice = Number(product.price || 0);
+  const hasPromo = product.promoPrice && Number(product.promoPrice) < originalPrice;
+  const availableSizes = product.ProductVariations?.length
+    ? [...new Set(product.ProductVariations.map((variation) => variation.Size?.name).filter(Boolean))]
+    : ['P', 'M', 'G', 'GG', 'XG'];
+%>
+<section class="product-page">
+  <div class="container">
+    <nav class="breadcrumb-line" aria-label="breadcrumb">
+      <a href="/">Home</a>
+      <% if (product.Category) { %>
+        <span>/</span>
+        <a href="/categoria/<%= product.Category.slug %>"><%= product.Category.name %></a>
+      <% } %>
+      <span>/</span>
+      <strong><%= product.name %></strong>
+    </nav>
+
+    <div class="product-layout">
+      <div class="product-gallery">
+        <div class="gallery-main">
+          <img src="<%= image %>" alt="<%= product.name %>" loading="eager">
+          <% if (hasPromo) { %><span class="gallery-badge">Oferta ativa</span><% } %>
+        </div>
+        <div class="trust-row">
+          <span><i data-lucide="truck"></i> Frete antes do carrinho</span>
+          <span><i data-lucide="shield-check"></i> Compra segura</span>
+          <span><i data-lucide="refresh-cw"></i> Troca facil</span>
+        </div>
+      </div>
+
+      <aside class="buy-box">
+        <span class="eyebrow">Pronto para envio</span>
+        <h1><%= product.name %></h1>
+        <p class="product-lead"><%= product.descriptionShort || 'Peca streetwear masculina com tecido premium e caimento urbano.' %></p>
+        <div class="product-price-row big">
+          <strong class="price">R$ <%= price.toFixed(2).replace('.', ',') %></strong>
+          <% if (hasPromo) { %><span class="old-price">R$ <%= originalPrice.toFixed(2).replace('.', ',') %></span><% } %>
+        </div>
+        <div class="installment">ou em ate 3x sem juros</div>
+
+        <form action="/carrinho" method="post" class="buy-form" data-loading-form>
+          <input type="hidden" name="name" value="<%= product.name %>">
+          <input type="hidden" name="slug" value="<%= product.slug %>">
+          <input type="hidden" name="price" value="<%= price.toFixed(2) %>">
+          <input type="hidden" name="image" value="<%= image %>">
+          <input type="hidden" name="buyNow" value="0" data-buy-now-input>
+
+          <label class="field-label" for="size">Tamanho</label>
+          <div class="size-options" role="radiogroup" aria-label="Escolha o tamanho">
+            <% availableSizes.forEach((size, index) => { %>
+              <label>
+                <input type="radio" name="size" value="<%= size %>" <%= index === 1 ? 'checked' : '' %>>
+                <span><%= size %></span>
+              </label>
+            <% }) %>
+          </div>
+
+          <div class="quantity-row">
+            <label class="field-label" for="quantity">Quantidade</label>
+            <input id="quantity" class="form-control" type="number" name="quantity" value="1" min="1">
+          </div>
+
+          <div class="buy-actions">
+            <button class="btn btn-gold" type="submit">
+              <i data-lucide="shopping-bag"></i>
+              Adicionar ao carrinho
+            </button>
+            <button class="btn btn-dark-action" type="submit" data-buy-now-button>
+              <i data-lucide="zap"></i>
+              Comprar agora
+            </button>
+          </div>
+        </form>
+
+        <button class="wishlist-wide wishlist-toggle" type="button" data-wishlist data-id="<%= product.slug %>" data-name="<%= product.name %>" data-price="<%= price.toFixed(2) %>" data-url="/produto/<%= product.slug %>" data-image="<%= image %>">
+          <i data-lucide="heart"></i>
+          Salvar na lista de desejos
+        </button>
+
+        <div class="freight-box">
+          <div>
+            <h2>Calcule seu frete</h2>
+            <p>Veja opcoes de envio antes de ir para o carrinho.</p>
+          </div>
+          <form class="freight-form" data-product-freight>
+            <input class="form-control" name="zipcode" inputmode="numeric" autocomplete="postal-code" placeholder="Digite seu CEP" required>
+            <button class="btn btn-ghost" type="submit">
+              <i data-lucide="truck"></i>
+              Calcular
+            </button>
+          </form>
+          <div class="freight-results" data-freight-results></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="section size-guide-section">
+  <div class="container size-guide" data-size-guide>
+    <div>
+      <span class="eyebrow">Guia de tamanhos</span>
+      <h2>Descubra o melhor tamanho para suas medidas</h2>
+      <p>Informe suas medidas principais. A recomendacao considera torax, cintura e altura para sugerir o caimento mais confortavel.</p>
+      <div class="size-form">
+        <label>Torax em cm<input class="form-control" type="number" min="70" max="140" data-chest placeholder="Ex: 98"></label>
+        <label>Cintura em cm<input class="form-control" type="number" min="60" max="130" data-waist placeholder="Ex: 84"></label>
+        <label>Altura em cm<input class="form-control" type="number" min="140" max="220" data-height placeholder="Ex: 178"></label>
+        <button class="btn btn-gold" type="button" data-size-calculate>
+          <i data-lucide="ruler"></i>
+          Recomendar tamanho
+        </button>
+      </div>
+      <div class="size-result" data-size-result aria-live="polite">Preencha suas medidas para ver a recomendacao.</div>
+    </div>
+    <div class="size-table-wrap">
+      <table class="size-table">
+        <caption>Tabela de referencia Duug Styles</caption>
+        <thead><tr><th>Tamanho</th><th>Torax</th><th>Cintura</th><th>Altura</th></tr></thead>
+        <tbody>
+          <tr><td>P</td><td>84-92</td><td>70-78</td><td>160-170</td></tr>
+          <tr><td>M</td><td>92-100</td><td>78-86</td><td>170-178</td></tr>
+          <tr><td>G</td><td>100-108</td><td>86-94</td><td>176-184</td></tr>
+          <tr><td>GG</td><td>108-116</td><td>94-104</td><td>182-190</td></tr>
+          <tr><td>XG</td><td>116-126</td><td>104-114</td><td>188-200</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-heading">
+      <div>
+        <span class="eyebrow">Complete o look</span>
+        <h2>Produtos relacionados</h2>
+      </div>
+    </div>
+    <div class="product-grid">
+      <% related.forEach((p) => { %>
+        <%- include('../partials/product-card', { product: p }) %>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<script type="application/ld+json">
+<%- JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: product.name,
+  description: product.descriptionShort || product.descriptionLong || product.name,
+  image: image.startsWith('http') ? image : appUrl + image,
+  sku: product.slug,
+  brand: { '@type': 'Brand', name: 'Duug Styles' },
+  offers: {
+    '@type': 'Offer',
+    price: price.toFixed(2),
+    priceCurrency: 'BRL',
+    availability: 'https://schema.org/InStock',
+    url: appUrl + '/produto/' + product.slug
+  }
+}) %>
+</script>

@@ -1,2 +1,127 @@
-<section class="hero"><div class="container"><h1 class="display-4 fw-bold">Vista o estilo. Domine a rua.</h1><p>Streetwear masculino com presença.</p><a href="/busca" class="btn btn-gold">Comprar agora</a></div></section>
-<div class="container py-5"><h2>Destaques</h2><div class="row g-3"><% featured.forEach(p=>{ %><div class="col-6 col-md-3"><div class="product-card p-3 h-100"><h3 class="h6"><%= p.name %></h3><p class="price">R$ <%= p.promoPrice || p.price %></p><a class="btn btn-sm btn-gold" href="/produto/<%= p.slug %>">Ver produto</a></div></div><% }) %></div></div>
+<section class="hero" aria-label="Colecao principal Duug Styles">
+  <div class="hero-bg" style="background-image:url('/public/images/hero-streetwear-duug.png')"></div>
+  <div class="container hero-content">
+    <div class="hero-copy">
+      <span class="eyebrow">Drop premium masculino</span>
+      <h1>Duug Styles Streetwear Masculino</h1>
+      <p>Camisetas oversized, moletons pesados e pecas urbanas com compra rapida, frete visivel e ofertas para fechar o pedido sem atrito.</p>
+      <div class="hero-actions">
+        <a class="btn btn-gold" href="/busca">
+          <i data-lucide="shopping-bag"></i>
+          Comprar agora
+        </a>
+        <a class="btn btn-light-ghost" href="/categoria/camisetas">
+          <i data-lucide="shirt"></i>
+          Ver camisetas
+        </a>
+      </div>
+      <div class="hero-metrics" aria-label="Beneficios da loja">
+        <span><strong>3x</strong> sem juros</span>
+        <span><strong>24h</strong> para envio util</span>
+        <span><strong>7 dias</strong> para troca</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="flash-strip" aria-label="Promocao relampago">
+  <div class="container flash-strip-inner">
+    <div>
+      <span class="eyebrow">Promocao relampago</span>
+      <h2>Use FLASH15 antes que o contador zere</h2>
+    </div>
+    <div class="countdown" data-flash-countdown data-duration-minutes="180" aria-live="polite">
+      <span data-hours>03</span><small>h</small>
+      <span data-minutes>00</span><small>m</small>
+      <span data-seconds>00</span><small>s</small>
+    </div>
+    <a class="btn btn-ghost" href="/busca?promo=flash">
+      <i data-lucide="flame"></i>
+      Ver ofertas
+    </a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-heading">
+      <div>
+        <span class="eyebrow">Mais vendidos</span>
+        <h2>Streetwear pronto para comprar</h2>
+      </div>
+      <a href="/busca" class="text-link">Ver todos</a>
+    </div>
+    <div class="product-grid">
+      <% featured.forEach((p) => { %>
+        <%- include('../partials/product-card', { product: p }) %>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<section class="section section-split">
+  <div class="container split-banner">
+    <div class="split-copy">
+      <span class="eyebrow">Guia de compra</span>
+      <h2>Escolha melhor, compre mais rapido</h2>
+      <p>Pagina de produto com guia de tamanho por medidas, calculo de frete, favoritos, cupom e compra rapida para reduzir duvida antes do checkout.</p>
+      <a href="/busca" class="btn btn-dark-action">
+        <i data-lucide="arrow-right"></i>
+        Encontrar meu look
+      </a>
+    </div>
+    <img src="/public/images/promo-flatlay-duug.png" alt="Roupas streetwear masculinas dobradas com embalagem premium" loading="lazy">
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-heading">
+      <div>
+        <span class="eyebrow">Categorias</span>
+        <h2>Compre por estilo</h2>
+      </div>
+    </div>
+    <div class="category-grid">
+      <% categories.forEach((category) => { %>
+        <a class="category-tile" href="/categoria/<%= category.slug %>">
+          <span><%= category.name %></span>
+          <small><%= category.seoText || 'Pecas urbanas premium' %></small>
+          <i data-lucide="arrow-up-right"></i>
+        </a>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<% if (newest.length) { %>
+<section class="section">
+  <div class="container">
+    <div class="section-heading">
+      <div>
+        <span class="eyebrow">Novidades</span>
+        <h2>Acabaram de chegar</h2>
+      </div>
+    </div>
+    <div class="product-grid">
+      <% newest.forEach((p) => { %>
+        <%- include('../partials/product-card', { product: p }) %>
+      <% }) %>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<section class="seo-band">
+  <div class="container seo-grid">
+    <div>
+      <h2>Moda streetwear masculina com foco em caimento, durabilidade e compra segura</h2>
+      <p>A Duug Styles reune camisetas oversized, moletons masculinos, pecas urbanas e ofertas sazonais para quem procura streetwear premium no Brasil. Cada pagina foi estruturada com informacoes claras de preco, guia de tamanho, frete, disponibilidade e checkout objetivo.</p>
+    </div>
+    <ul>
+      <li>Descricoes otimizadas para busca e indexacao.</li>
+      <li>Dados estruturados para produto e ofertas.</li>
+      <li>Experiencia mobile rapida e orientada a conversao.</li>
+    </ul>
+  </div>
+</section>
