@@ -5,7 +5,7 @@ function payload(body, file) {
   return {
     title: body.title,
     subtitle: body.subtitle,
-    imageUrl: publicUploadPath(file) || body.imageUrl,
+    imageUrl: publicUploadPath(file) || body.currentImageUrl || '/public/images/hero-streetwear-duug.png',
     link: body.link,
     position: body.position || 'hero',
     sortOrder: Number(body.sortOrder || 0),

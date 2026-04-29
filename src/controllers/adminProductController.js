@@ -43,12 +43,7 @@ function firstFileByField(files = [], fieldname) {
 async function saveImages(product, body, files = []) {
   const existingCount = await ProductImage.count({ where: { productId: product.id } });
   const uploaded = filesByField(files, 'images').map((file) => publicUploadPath(file));
-  const urls = asArray(body.imageUrls)
-    .flatMap((value) => String(value || '').split(/\r?\n/))
-    .map((value) => value.trim())
-    .filter(Boolean);
-  const legacyUrl = body.imageUrl ? [body.imageUrl] : [];
-  const imageUrls = [...legacyUrl, ...urls, ...uploaded];
+  const imageUrls = uploaded;
 
   await Promise.all(imageUrls.map((imageUrl, index) => ProductImage.create({
     productId: product.id,
@@ -56,6 +51,36 @@ async function saveImages(product, body, files = []) {
     altText: body.altText || product.name,
     isMain: existingCount === 0 && index === 0
   })));
+}
+
+function generatedSku(product, sizeId, colorId, index) {
+  return `${product.slug}-${colorId || 'cor'}-${sizeId || 'tam'}-${index + 1}`.toUpperCase();
+}
+
+function variationRowsFromSelections(product, body) {
+  const selectedSizeIds = asArray(body.selectedSizeIds).filter(Boolean);
+  const selectedColorIds = asArray(body.selectedColorIds).filter(Boolean);
+  if (!selectedSizeIds.length && !selectedColorIds.length) return [];
+
+  const sizes = selectedSizeIds.length ? selectedSizeIds : [null];
+  const colors = selectedColorIds.length ? selectedColorIds : [null];
+  const rows = [];
+
+  colors.forEach((colorId) => {
+    sizes.forEach((sizeId) => {
+      rows.push({
+        productId: product.id,
+        sizeId: sizeId || null,
+        colorId: colorId || null,
+        sku: generatedSku(product, sizeId, colorId, rows.length),
+        price: product.promoPrice || product.price,
+        stock: 0,
+        imageUrl: null
+      });
+    });
+  });
+
+  return rows;
 }
 
 async function saveVariations(product, body, files = []) {
@@ -68,9 +93,15 @@ async function saveVariations(product, body, files = []) {
 
   await ProductVariation.destroy({ where: { productId: product.id } });
 
+  if (!sizeIds.length) {
+    const generatedRows = variationRowsFromSelections(product, body);
+    if (generatedRows.length) await ProductVariation.bulkCreate(generatedRows);
+    return;
+  }
+
   const rows = sizeIds.map((sizeId, index) => {
     const colorId = colorIds[index];
-    const sku = skus[index] || `${product.slug}-${index + 1}`;
+    const sku = skus[index] || generatedSku(product, sizeId, colorId, index);
     const uploaded = firstFileByField(files, `variationImage_${index}`);
     const imageUrl = publicUploadPath(uploaded) || imageUrls[index] || null;
 
@@ -134,6 +165,11 @@ module.exports = {
   },
   async removeImage(req, res) {
     await ProductImage.destroy({ where: { id: req.params.imageId, productId: req.params.id } });
+    const hasMain = await ProductImage.findOne({ where: { productId: req.params.id, isMain: true } });
+    if (!hasMain) {
+      const first = await ProductImage.findOne({ where: { productId: req.params.id }, order: [['id', 'ASC']] });
+      if (first) await first.update({ isMain: true });
+    }
     res.redirect(`/admin/produtos/${req.params.id}/editar`);
   }
 };

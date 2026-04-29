@@ -2,16 +2,27 @@
   const action = product ? `/admin/produtos/${product.id}` : '/admin/produtos';
   const images = product?.ProductImages || [];
   const variations = product?.ProductVariations?.length ? product.ProductVariations : [];
+  const selectedSizeIds = [...new Set(variations.map((variation) => variation.sizeId).filter(Boolean))];
+  const selectedColorIds = [...new Set(variations.map((variation) => variation.colorId).filter(Boolean))];
+  const variationJson = variations.map((variation) => ({
+    sizeId: variation.sizeId,
+    colorId: variation.colorId,
+    sku: variation.sku,
+    price: variation.price,
+    stock: variation.stock,
+    imageUrl: variation.imageUrl || ''
+  }));
 %>
 <section class="admin-page">
   <div class="admin-heading">
     <div>
       <h1><%= product ? 'Editar produto' : 'Novo produto' %></h1>
-      <p>Configure dados comerciais, SEO, galeria, tamanhos, cores, estoque e precos por variacao.</p>
+      <p>Escolha tamanhos e cores. O sistema gera automaticamente todas as combinacoes possiveis.</p>
     </div>
     <a class="btn btn-outline-dark" href="/admin/produtos">Voltar</a>
   </div>
-  <form method="post" action="<%= action %>" class="admin-card admin-form" enctype="multipart/form-data">
+
+  <form method="post" action="<%= action %>" class="admin-card admin-form" enctype="multipart/form-data" data-product-form>
     <h2>Dados do produto</h2>
     <div class="admin-form-grid">
       <label>Nome<input class="form-control" name="name" value="<%= product?.name || '' %>" required></label>
@@ -24,7 +35,8 @@
     <label>Descricao curta<textarea class="form-control" name="descriptionShort" rows="2"><%= product?.descriptionShort || '' %></textarea></label>
     <label>Descricao completa<textarea class="form-control" name="descriptionLong" rows="4"><%= product?.descriptionLong || '' %></textarea></label>
 
-    <h2>Galeria de imagens</h2>
+    <h2>Imagens do produto</h2>
+    <p class="admin-help">Arraste ou selecione varias imagens. A primeira imagem enviada vira a principal quando o produto ainda nao tiver galeria.</p>
     <% if (images.length) { %>
       <div class="admin-image-grid">
         <% images.forEach((image) => { %>
@@ -36,34 +48,46 @@
         <% }) %>
       </div>
     <% } %>
-    <div class="admin-form-grid">
-      <label>Upload de imagens<input class="form-control" type="file" name="images" accept="image/*" multiple></label>
-      <label>URLs de imagens, uma por linha<textarea class="form-control" name="imageUrls" rows="3" placeholder="/public/images/promo-flatlay-duug.png"></textarea></label>
-      <label>Texto alt padrao<input class="form-control" name="altText" value="<%= images[0]?.altText || product?.name || '' %>"></label>
+    <label class="upload-dropzone" data-dropzone>
+      <input type="file" name="images" accept="image/*" multiple data-dropzone-input>
+      <span>Solte as imagens aqui ou clique para selecionar</span>
+      <small>PNG, JPG ou WEBP ate 5MB por arquivo</small>
+    </label>
+    <div class="upload-preview-grid" data-upload-preview></div>
+    <label>Texto alt padrao<input class="form-control" name="altText" value="<%= images[0]?.altText || product?.name || '' %>"></label>
+
+    <h2>Gerador de variações</h2>
+    <p class="admin-help">Exemplo: tamanhos P, M e G + cores Azul e Preto criam Preto P, Preto M, Preto G, Azul P, Azul M e Azul G.</p>
+    <div class="attribute-builder">
+      <div>
+        <strong>Tamanhos</strong>
+        <div class="attribute-chip-grid">
+          <% sizes.forEach((size) => { %>
+            <label class="attribute-chip">
+              <input type="checkbox" name="selectedSizeIds" value="<%= size.id %>" data-size-name="<%= size.name %>" <%= selectedSizeIds.includes(size.id) ? 'checked' : '' %>>
+              <span><%= size.name %></span>
+            </label>
+          <% }) %>
+        </div>
+      </div>
+      <div>
+        <strong>Cores</strong>
+        <div class="attribute-chip-grid">
+          <% colors.forEach((color) => { %>
+            <label class="attribute-chip">
+              <input type="checkbox" name="selectedColorIds" value="<%= color.id %>" data-color-name="<%= color.name %>" data-color-hex="<%= color.hexCode || '#999999' %>" <%= selectedColorIds.includes(color.id) ? 'checked' : '' %>>
+              <span><i style="--swatch:<%= color.hexCode || '#999999' %>"></i><%= color.name %></span>
+            </label>
+          <% }) %>
+        </div>
+      </div>
     </div>
 
-    <h2>Variações</h2>
-    <p class="admin-help">Cada linha pode ter combinacao de tamanho/cor, SKU, preco, estoque e imagem especifica. Se nao houver preco, a variacao usa o preco base do produto.</p>
-    <div class="variation-editor" data-variation-editor>
-      <% [...variations, null].forEach((variation, index) => { %>
-        <div class="variation-row">
-          <input type="hidden" name="variationImageUrl" value="<%= variation?.imageUrl || '' %>">
-          <label>Tamanho<select class="form-select" name="variationSizeId">
-            <option value="">Selecione</option>
-            <% sizes.forEach((size) => { %><option value="<%= size.id %>" <%= variation?.sizeId === size.id ? 'selected' : '' %>><%= size.name %></option><% }) %>
-          </select></label>
-          <label>Cor<select class="form-select" name="variationColorId">
-            <option value="">Selecione</option>
-            <% colors.forEach((color) => { %><option value="<%= color.id %>" <%= variation?.colorId === color.id ? 'selected' : '' %>><%= color.name %></option><% }) %>
-          </select></label>
-          <label>SKU<input class="form-control" name="variationSku" value="<%= variation?.sku || '' %>"></label>
-          <label>Preco<input class="form-control" name="variationPrice" value="<%= variation?.price || '' %>"></label>
-          <label>Estoque<input class="form-control" name="variationStock" value="<%= variation?.stock || '' %>"></label>
-          <label>Imagem<input class="form-control" type="file" name="variationImage_<%= index %>" accept="image/*"></label>
-          <% if (variation?.imageUrl) { %><a class="btn btn-sm btn-outline-dark" href="<%= variation.imageUrl %>" target="_blank" rel="noopener">Ver imagem</a><% } %>
-        </div>
-      <% }) %>
+    <div class="variation-toolbar">
+      <button class="btn btn-outline-dark" type="button" data-generate-variations>Gerar variações</button>
+      <span data-variation-count><%= variations.length %> variacao(oes)</span>
     </div>
+    <div class="variation-matrix" data-variation-matrix data-existing-variations='<%- JSON.stringify(variationJson) %>'></div>
 
     <h2>SEO</h2>
     <div class="admin-form-grid">
@@ -85,6 +109,7 @@
     </div>
     <button class="btn btn-gold">Salvar produto</button>
   </form>
+
   <% if (product) { %>
     <% images.forEach((image) => { %>
       <form id="remove-image-<%= image.id %>" method="post" action="/admin/produtos/<%= product.id %>/imagens/<%= image.id %>/remover"></form>

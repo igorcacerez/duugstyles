@@ -8,12 +8,20 @@
     <div class="admin-form-grid">
       <label>Titulo<input class="form-control" name="title" value="<%= banner?.title || '' %>" required></label>
       <label>Subtitulo<input class="form-control" name="subtitle" value="<%= banner?.subtitle || '' %>"></label>
-      <label>Imagem URL<input class="form-control" name="imageUrl" value="<%= banner?.imageUrl || '/public/images/hero-streetwear-duug.png' %>"></label>
-      <label>Upload da imagem<input class="form-control" type="file" name="imageFile" accept="image/*"></label>
+      <input type="hidden" name="currentImageUrl" value="<%= banner?.imageUrl || '' %>">
       <label>Link<input class="form-control" name="link" value="<%= banner?.link || '/busca' %>"></label>
       <label>Posicao<input class="form-control" name="position" value="<%= banner?.position || 'hero' %>"></label>
       <label>Ordem<input class="form-control" name="sortOrder" type="number" value="<%= banner?.sortOrder || 0 %>"></label>
     </div>
+    <% if (banner?.imageUrl) { %>
+      <div class="admin-image-grid"><div class="admin-image-card"><img src="<%= banner.imageUrl %>" alt="<%= banner.title %>"><small>Imagem atual</small></div></div>
+    <% } %>
+    <label class="upload-dropzone" data-dropzone>
+      <input type="file" name="imageFile" accept="image/*" data-dropzone-input>
+      <span>Solte o banner aqui ou clique para selecionar</span>
+      <small>Use uma imagem horizontal para melhor resultado</small>
+    </label>
+    <div class="upload-preview-grid" data-upload-preview></div>
     <div class="switch-row"><label><input type="checkbox" name="isActive" <%= !banner || banner?.isActive ? 'checked' : '' %>> Ativo</label></div>
     <button class="btn btn-gold">Salvar banner</button>
   </form>
