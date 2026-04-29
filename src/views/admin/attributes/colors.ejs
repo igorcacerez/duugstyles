@@ -1,0 +1,32 @@
+<section class="admin-page">
+  <div class="admin-heading">
+    <div><h1>Cores</h1><p>Cadastre cores com nome e hexadecimal para filtros e variações.</p></div>
+  </div>
+  <div class="admin-card">
+    <form method="post" action="/admin/cores" class="admin-form">
+      <div class="admin-form-grid three">
+        <label>Nome<input class="form-control" name="name" placeholder="Preto" required></label>
+        <label>Hexadecimal<input class="form-control" name="hexCode" placeholder="#050505" required></label>
+        <label>Status<span class="switch-row"><label><input type="checkbox" name="isActive" checked> Ativa</label></span></label>
+      </div>
+      <button class="btn btn-gold">Adicionar cor</button>
+    </form>
+  </div>
+  <div class="admin-card">
+    <table class="admin-table">
+      <thead><tr><th>Cor</th><th>Hex</th><th>Status</th><th>Acao</th></tr></thead>
+      <tbody>
+        <% colors.forEach((color) => { %>
+          <tr>
+            <form method="post" action="/admin/cores/<%= color.id %>">
+              <td><input class="form-control" name="name" value="<%= color.name %>"></td>
+              <td><input class="form-control" name="hexCode" value="<%= color.hexCode %>"></td>
+              <td><label><input type="checkbox" name="isActive" <%= color.isActive ? 'checked' : '' %>> Ativa</label></td>
+              <td><button class="btn btn-sm btn-outline-dark">Salvar</button></td>
+            </form>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>

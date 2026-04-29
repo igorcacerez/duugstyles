@@ -17,6 +17,7 @@
               <h2><%= item.name %></h2>
               <p>
                 <% if (item.size) { %>Tamanho <%= item.size %> · <% } %>
+                <% if (item.color) { %>Cor <%= item.color %> · <% } %>
                 Quantidade <%= item.quantity %>
               </p>
               <strong>R$ <%= (Number(item.price) * Number(item.quantity)).toFixed(2).replace('.', ',') %></strong>

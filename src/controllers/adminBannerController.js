@@ -1,10 +1,11 @@
 const { Banner } = require('../models');
+const { publicUploadPath } = require('../middlewares/uploadMiddleware');
 
-function payload(body) {
+function payload(body, file) {
   return {
     title: body.title,
     subtitle: body.subtitle,
-    imageUrl: body.imageUrl,
+    imageUrl: publicUploadPath(file) || body.imageUrl,
     link: body.link,
     position: body.position || 'hero',
     sortOrder: Number(body.sortOrder || 0),
@@ -21,7 +22,7 @@ module.exports = {
     res.render('admin/banners/form', { banner: null });
   },
   async create(req, res) {
-    await Banner.create(payload(req.body));
+    await Banner.create(payload(req.body, req.file));
     res.redirect('/admin/banners');
   },
   async editPage(req, res) {
@@ -31,7 +32,7 @@ module.exports = {
   },
   async update(req, res) {
     const banner = await Banner.findByPk(req.params.id);
-    if (banner) await banner.update(payload(req.body));
+    if (banner) await banner.update(payload(req.body, req.file));
     res.redirect('/admin/banners');
   },
   async remove(req, res) {

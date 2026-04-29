@@ -8,6 +8,18 @@
     <span class="eyebrow">Categoria Duug Styles</span>
     <h1><%= category.name %></h1>
     <p><%= category.seoText || 'Pecas streetwear masculinas com modelagem atual, tecido premium e compra rapida.' %></p>
+    <form class="search-panel filter-panel" action="/categoria/<%= category.slug %>" method="get">
+      <select class="form-select" name="tamanho" aria-label="Filtrar por tamanho">
+        <option value="">Todos os tamanhos</option>
+        <% sizes.forEach((size) => { %><option value="<%= size.id %>" <%= filters.sizeId === size.id ? 'selected' : '' %>><%= size.name %></option><% }) %>
+      </select>
+      <select class="form-select" name="cor" aria-label="Filtrar por cor">
+        <option value="">Todas as cores</option>
+        <% colors.forEach((color) => { %><option value="<%= color.id %>" <%= filters.colorId === color.id ? 'selected' : '' %>><%= color.name %></option><% }) %>
+      </select>
+      <button class="btn btn-gold" type="submit">Filtrar</button>
+      <a class="btn btn-light-ghost" href="/categoria/<%= category.slug %>">Limpar</a>
+    </form>
   </div>
 </section>
 

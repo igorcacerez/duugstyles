@@ -29,6 +29,13 @@ module.exports = {
       { product_id: 2, image_url: '/public/images/promo-flatlay-duug.png', alt_text: 'Moletom masculino Duug Styles em composicao streetwear premium', is_main: true, created_at: now, updated_at: now }
     ]);
 
+    await queryInterface.bulkInsert('product_variations', [
+      { product_id: 1, size_id: 2, color_id: 1, sku: 'DUUG-CAM-SIG-M-PRETO', price: 129.90, stock: 20, image_url: '/public/images/promo-flatlay-duug.png', created_at: now, updated_at: now },
+      { product_id: 1, size_id: 3, color_id: 3, sku: 'DUUG-CAM-SIG-G-BRANCO', price: 139.90, stock: 12, image_url: '/public/images/promo-flatlay-duug.png', created_at: now, updated_at: now },
+      { product_id: 2, size_id: 3, color_id: 1, sku: 'DUUG-MOL-SKL-G-PRETO', price: 269.90, stock: 8, image_url: '/public/images/promo-flatlay-duug.png', created_at: now, updated_at: now },
+      { product_id: 2, size_id: 4, color_id: 2, sku: 'DUUG-MOL-SKL-GG-DOURADO', price: 289.90, stock: 4, image_url: '/public/images/promo-flatlay-duug.png', created_at: now, updated_at: now }
+    ]);
+
     await queryInterface.bulkInsert('banners', [
       { title: 'Duug Styles Streetwear Masculino', subtitle: 'Colecao premium masculina Duug Styles', image_url: '/public/images/hero-streetwear-duug.png', link: '/categoria/camisetas', position: 'hero', sort_order: 1, is_active: true, created_at: now, updated_at: now }
     ]);
@@ -46,7 +53,7 @@ module.exports = {
   },
 
   async down(queryInterface) {
-    for (const table of ['settings','coupons','banners','product_images','products','colors','sizes','categories','users']) {
+    for (const table of ['settings','coupons','banners','product_variations','product_images','products','colors','sizes','categories','users']) {
       await queryInterface.bulkDelete(table, null, {});
     }
   }

@@ -157,7 +157,10 @@
         const best = scored[0];
         result.textContent = `Tamanho recomendado: ${best.size}. Para caimento mais solto, escolha um tamanho acima.`;
         const input = document.querySelector(`.size-options input[value="${best.size}"]`);
-        if (input) input.checked = true;
+        if (input) {
+          input.checked = true;
+          input.dispatchEvent(new Event('change', { bubbles: true }));
+        }
       });
     });
   }
@@ -187,6 +190,83 @@
         }
       });
     });
+  }
+
+  function initGallery() {
+    const mainImage = document.querySelector('[data-product-main-image]');
+    if (!mainImage) return;
+    document.querySelectorAll('[data-gallery-thumb]').forEach((button) => {
+      button.addEventListener('click', () => {
+        mainImage.src = button.dataset.galleryThumb;
+      });
+    });
+  }
+
+  function readProductVariations() {
+    const node = document.getElementById('product-variations-data');
+    if (!node) return [];
+    try {
+      return JSON.parse(node.textContent) || [];
+    } catch (error) {
+      return [];
+    }
+  }
+
+  function initVariationSelection() {
+    const variations = readProductVariations();
+    if (!variations.length) return;
+
+    const box = document.querySelector('.buy-box');
+    const mainImage = document.querySelector('[data-product-main-image]');
+    const priceNode = document.querySelector('[data-product-price]');
+    const priceInput = document.querySelector('[data-product-price-input]');
+    const imageInput = document.querySelector('[data-product-image-input]');
+    const variationInput = document.querySelector('[data-variation-id-input]');
+    const colorInput = document.querySelector('[data-color-name-input]');
+    const stockNode = document.querySelector('[data-stock-status]');
+
+    const selectedValue = (selector, dataKey) => {
+      const input = document.querySelector(`${selector}:checked`);
+      return input ? Number(input.dataset[dataKey]) : null;
+    };
+
+    const applyVariation = () => {
+      const sizeId = selectedValue('.size-options input', 'sizeId');
+      const colorId = selectedValue('.color-options input', 'colorId');
+      const selected = variations.find((variation) => {
+        const sizeMatches = !sizeId || Number(variation.sizeId) === sizeId;
+        const colorMatches = !colorId || Number(variation.colorId) === colorId;
+        return sizeMatches && colorMatches;
+      });
+
+      if (!selected) {
+        if (stockNode) stockNode.textContent = 'Variacao indisponivel';
+        if (box) {
+          box.querySelectorAll('button[type="submit"]').forEach((button) => {
+            button.disabled = true;
+          });
+        }
+        return;
+      }
+
+      if (priceNode) priceNode.textContent = money(selected.price);
+      if (priceInput) priceInput.value = Number(selected.price || 0).toFixed(2);
+      if (imageInput) imageInput.value = selected.image;
+      if (variationInput) variationInput.value = selected.id || '';
+      if (colorInput) colorInput.value = selected.colorName || '';
+      if (mainImage && selected.image) mainImage.src = selected.image;
+      if (stockNode) stockNode.textContent = Number(selected.stock || 0) > 0 ? `${selected.stock} em estoque` : 'Sem estoque nessa variacao';
+      if (box) {
+        box.querySelectorAll('button[type="submit"]').forEach((button) => {
+          button.disabled = Number(selected.stock || 0) <= 0;
+        });
+      }
+    };
+
+    document.querySelectorAll('.size-options input, .color-options input').forEach((input) => {
+      input.addEventListener('change', applyVariation);
+    });
+    applyVariation();
   }
 
   function initBuyNow() {
@@ -225,6 +305,8 @@
   initCountdown();
   initSizeGuide();
   initProductFreight();
+  initGallery();
+  initVariationSelection();
   initBuyNow();
   initLoadingForms();
   updateWishlistUi();

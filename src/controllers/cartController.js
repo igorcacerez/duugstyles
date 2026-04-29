@@ -80,7 +80,9 @@ module.exports = {
       name: req.body.name,
       slug: req.body.slug,
       image: req.body.image,
+      variationId: req.body.variationId || null,
       size: req.body.size,
+      color: req.body.color,
       price: Number(req.body.price || 0),
       quantity: Number(req.body.quantity || 1)
     });

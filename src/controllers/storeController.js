@@ -4,8 +4,32 @@ const seoService = require('../services/seoService');
 const settingsService = require('../services/settingsService');
 
 const productInclude = [
-  { model: ProductImage, required: false, order: [['isMain', 'DESC']] }
+  { model: ProductImage, required: false, order: [['isMain', 'DESC']] },
+  { model: ProductVariation, required: false, include: [{ model: Size, required: false }, { model: Color, required: false }] }
 ];
+
+function filtersFromQuery(query) {
+  return {
+    sizeId: query.tamanho ? Number(query.tamanho) : null,
+    colorId: query.cor ? Number(query.cor) : null
+  };
+}
+
+function productIncludesForFilters(filters) {
+  const variationWhere = {};
+  if (filters.sizeId) variationWhere.sizeId = filters.sizeId;
+  if (filters.colorId) variationWhere.colorId = filters.colorId;
+
+  return [
+    { model: ProductImage, required: false, order: [['isMain', 'DESC']] },
+    {
+      model: ProductVariation,
+      required: Boolean(filters.sizeId || filters.colorId),
+      where: Object.keys(variationWhere).length ? variationWhere : undefined,
+      include: [{ model: Size, required: false }, { model: Color, required: false }]
+    }
+  ];
+}
 
 module.exports = {
   async home(req, res) {
@@ -35,10 +59,18 @@ module.exports = {
     const category = await Category.findOne({ where: { slug: req.params.slug } });
     if (!category) return res.status(404).render('errors/404', { meta: seoService.buildMeta({ title: 'Categoria nao encontrada' }) });
 
-    const products = await Product.findAll({ where: { categoryId: category.id, isActive: true }, include: productInclude });
+    const filters = filtersFromQuery(req.query);
+    const [products, sizes, colors] = await Promise.all([
+      Product.findAll({ where: { categoryId: category.id, isActive: true }, include: productIncludesForFilters(filters) }),
+      Size.findAll({ where: { isActive: true }, order: [['name', 'ASC']] }),
+      Color.findAll({ where: { isActive: true }, order: [['name', 'ASC']] })
+    ]);
     res.render('store/category', {
       category,
       products,
+      sizes,
+      colors,
+      filters,
       meta: seoService.buildMeta({
         title: category.metaTitle || `${category.name} Duug Styles`,
         description: category.metaDescription || category.seoText,
@@ -78,13 +110,21 @@ module.exports = {
 
   async search(req, res) {
     const q = String(req.query.q || '').trim();
+    const filters = filtersFromQuery(req.query);
     const where = q
       ? { isActive: true, [Op.or]: [{ name: { [Op.like]: `%${q}%` } }, { keywords: { [Op.like]: `%${q}%` } }] }
       : { isActive: true };
-    const products = await Product.findAll({ where, include: productInclude, limit: 24 });
+    const [products, sizes, colors] = await Promise.all([
+      Product.findAll({ where, include: productIncludesForFilters(filters), limit: 24 }),
+      Size.findAll({ where: { isActive: true }, order: [['name', 'ASC']] }),
+      Color.findAll({ where: { isActive: true }, order: [['name', 'ASC']] })
+    ]);
     res.render('store/search', {
       q,
       products,
+      sizes,
+      colors,
+      filters,
       meta: seoService.buildMeta({
         title: q ? `Busca por ${q} | Duug Styles` : 'Buscar streetwear masculino | Duug Styles',
         description: 'Encontre camisetas oversized, moletons e pecas streetwear masculinas na Duug Styles.',

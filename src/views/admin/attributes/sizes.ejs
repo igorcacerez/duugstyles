@@ -1,0 +1,30 @@
+<section class="admin-page">
+  <div class="admin-heading">
+    <div><h1>Tamanhos</h1><p>Cadastre grades de tamanho para vincular aos produtos.</p></div>
+  </div>
+  <div class="admin-card">
+    <form method="post" action="/admin/tamanhos" class="admin-form">
+      <div class="admin-form-grid">
+        <label>Novo tamanho<input class="form-control" name="name" placeholder="P, M, G, 40, 42..." required></label>
+        <label>Status<span class="switch-row"><label><input type="checkbox" name="isActive" checked> Ativo</label></span></label>
+      </div>
+      <button class="btn btn-gold">Adicionar tamanho</button>
+    </form>
+  </div>
+  <div class="admin-card">
+    <table class="admin-table">
+      <thead><tr><th>Nome</th><th>Status</th><th>Acao</th></tr></thead>
+      <tbody>
+        <% sizes.forEach((size) => { %>
+          <tr>
+            <form method="post" action="/admin/tamanhos/<%= size.id %>">
+              <td><input class="form-control" name="name" value="<%= size.name %>"></td>
+              <td><label><input type="checkbox" name="isActive" <%= size.isActive ? 'checked' : '' %>> Ativo</label></td>
+              <td><button class="btn btn-sm btn-outline-dark">Salvar</button></td>
+            </form>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</section>

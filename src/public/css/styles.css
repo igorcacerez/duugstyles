@@ -546,11 +546,33 @@ svg {
   font-weight: 700;
 }
 
+.stock-status {
+  margin-top: 8px;
+  color: var(--green);
+  font-weight: 900;
+}
+
 .product-actions {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 8px;
   margin-top: 2px;
+}
+
+.card-attributes {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+}
+
+.color-dot {
+  width: 17px;
+  height: 17px;
+  display: inline-flex;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 999px;
+  background: var(--swatch);
 }
 
 .split-banner {
@@ -685,6 +707,11 @@ svg {
   background: var(--graphite);
 }
 
+.filter-panel {
+  max-width: 980px;
+  grid-template-columns: auto minmax(190px, 1fr) minmax(140px, auto) minmax(140px, auto) auto;
+}
+
 .form-control,
 .form-select {
   min-height: 46px;
@@ -763,6 +790,26 @@ svg {
   background: var(--graphite);
 }
 
+.gallery-thumbs {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.gallery-thumbs button {
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--graphite);
+}
+
+.gallery-thumbs img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
 .trust-row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -829,8 +876,15 @@ svg {
   gap: 8px;
 }
 
+.color-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .size-options input,
-.payment-options input {
+.payment-options input,
+.color-options input {
   position: absolute;
   opacity: 0;
   pointer-events: none;
@@ -854,6 +908,32 @@ svg {
   border-color: var(--gold);
   background: rgba(217,154,11,.16);
   color: var(--gold-2);
+}
+
+.color-options label {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  background: #100f0d;
+  color: var(--text);
+  font-weight: 900;
+}
+
+.color-options span {
+  width: 22px;
+  height: 22px;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 999px;
+  background: var(--swatch);
+}
+
+.color-options input:checked + span {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
 }
 
 .quantity-row {
@@ -1511,7 +1591,8 @@ svg {
 
   .freight-form,
   .coupon-form > div,
-  .search-panel {
+  .search-panel,
+  .filter-panel {
     grid-template-columns: 1fr;
   }
 

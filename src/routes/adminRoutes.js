@@ -8,7 +8,9 @@ const adminCouponController = require('../controllers/adminCouponController');
 const adminOrderController = require('../controllers/adminOrderController');
 const adminCustomerController = require('../controllers/adminCustomerController');
 const adminSettingsController = require('../controllers/adminSettingsController');
+const adminAttributeController = require('../controllers/adminAttributeController');
 const { ensureAdmin } = require('../middlewares/authMiddleware');
+const { upload } = require('../middlewares/uploadMiddleware');
 
 const router = Router();
 router.get('/login', authController.adminLoginPage);
@@ -23,10 +25,11 @@ router.get('/', adminController.dashboard);
 
 router.get('/produtos', adminProductController.list);
 router.get('/produtos/novo', adminProductController.createPage);
-router.post('/produtos', adminProductController.create);
+router.post('/produtos', upload.any(), adminProductController.create);
 router.get('/produtos/:id/editar', adminProductController.editPage);
-router.post('/produtos/:id', adminProductController.update);
+router.post('/produtos/:id', upload.any(), adminProductController.update);
 router.post('/produtos/:id/remover', adminProductController.remove);
+router.post('/produtos/:id/imagens/:imageId/remover', adminProductController.removeImage);
 
 router.get('/categorias', adminCategoryController.list);
 router.get('/categorias/nova', adminCategoryController.createPage);
@@ -35,11 +38,18 @@ router.get('/categorias/:id/editar', adminCategoryController.editPage);
 router.post('/categorias/:id', adminCategoryController.update);
 router.post('/categorias/:id/remover', adminCategoryController.remove);
 
+router.get('/tamanhos', adminAttributeController.sizes);
+router.post('/tamanhos', adminAttributeController.createSize);
+router.post('/tamanhos/:id', adminAttributeController.updateSize);
+router.get('/cores', adminAttributeController.colors);
+router.post('/cores', adminAttributeController.createColor);
+router.post('/cores/:id', adminAttributeController.updateColor);
+
 router.get('/banners', adminBannerController.list);
 router.get('/banners/novo', adminBannerController.createPage);
-router.post('/banners', adminBannerController.create);
+router.post('/banners', upload.single('imageFile'), adminBannerController.create);
 router.get('/banners/:id/editar', adminBannerController.editPage);
-router.post('/banners/:id', adminBannerController.update);
+router.post('/banners/:id', upload.single('imageFile'), adminBannerController.update);
 router.post('/banners/:id/remover', adminBannerController.remove);
 
 router.get('/cupons', adminCouponController.list);

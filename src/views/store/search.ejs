@@ -3,9 +3,17 @@
     <span class="eyebrow">Busca inteligente</span>
     <h1>Encontre seu proximo streetwear</h1>
     <p>Pesquise por camiseta, moletom, oversized, cor ou palavra-chave.</p>
-    <form class="search-panel" action="/busca" method="get">
+    <form class="search-panel filter-panel" action="/busca" method="get">
       <i data-lucide="search"></i>
       <input class="form-control" name="q" value="<%= q %>" placeholder="Buscar produtos" autofocus>
+      <select class="form-select" name="tamanho" aria-label="Filtrar por tamanho">
+        <option value="">Tamanho</option>
+        <% sizes.forEach((size) => { %><option value="<%= size.id %>" <%= filters.sizeId === size.id ? 'selected' : '' %>><%= size.name %></option><% }) %>
+      </select>
+      <select class="form-select" name="cor" aria-label="Filtrar por cor">
+        <option value="">Cor</option>
+        <% colors.forEach((color) => { %><option value="<%= color.id %>" <%= filters.colorId === color.id ? 'selected' : '' %>><%= color.name %></option><% }) %>
+      </select>
       <button class="btn btn-gold" type="submit">Buscar</button>
     </form>
   </div>

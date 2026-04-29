@@ -1,11 +1,26 @@
 <%
-  const image = assetUrl(product.ProductImages?.[0]?.imageUrl);
-  const price = Number(product.promoPrice || product.price || 0);
+  const galleryImages = product.ProductImages?.length ? product.ProductImages : [];
+  const fallbackImage = assetUrl(galleryImages[0]?.imageUrl);
+  const variationList = product.ProductVariations || [];
+  const defaultVariation = variationList.find((variation) => Number(variation.stock || 0) > 0) || variationList[0] || null;
+  const image = assetUrl(defaultVariation?.imageUrl || galleryImages[0]?.imageUrl);
+  const price = Number(defaultVariation?.price || product.promoPrice || product.price || 0);
   const originalPrice = Number(product.price || 0);
   const hasPromo = product.promoPrice && Number(product.promoPrice) < originalPrice;
-  const availableSizes = product.ProductVariations?.length
-    ? [...new Set(product.ProductVariations.map((variation) => variation.Size?.name).filter(Boolean))]
-    : ['P', 'M', 'G', 'GG', 'XG'];
+  const availableSizes = [...new Map(variationList.map((variation) => [variation.Size?.id, variation.Size]).filter(([, size]) => size)).values()];
+  const availableColors = [...new Map(variationList.map((variation) => [variation.Color?.id, variation.Color]).filter(([, color]) => color)).values()];
+  const variationData = variationList.map((variation) => ({
+    id: variation.id,
+    sku: variation.sku,
+    sizeId: variation.sizeId,
+    sizeName: variation.Size?.name,
+    colorId: variation.colorId,
+    colorName: variation.Color?.name,
+    colorHex: variation.Color?.hexCode,
+    price: Number(variation.price || product.promoPrice || product.price || 0),
+    stock: Number(variation.stock || 0),
+    image: assetUrl(variation.imageUrl || galleryImages[0]?.imageUrl)
+  }));
 %>
 <section class="product-page">
   <div class="container">
@@ -22,9 +37,19 @@
     <div class="product-layout">
       <div class="product-gallery">
         <div class="gallery-main">
-          <img src="<%= image %>" alt="<%= product.name %>" loading="eager">
+          <img src="<%= image %>" alt="<%= product.name %>" loading="eager" data-product-main-image>
           <% if (hasPromo) { %><span class="gallery-badge">Oferta ativa</span><% } %>
         </div>
+        <% if (galleryImages.length > 1 || variationList.some((variation) => variation.imageUrl)) { %>
+          <div class="gallery-thumbs">
+            <% galleryImages.forEach((galleryImage) => { %>
+              <button type="button" data-gallery-thumb="<%= assetUrl(galleryImage.imageUrl) %>"><img src="<%= assetUrl(galleryImage.imageUrl) %>" alt="<%= galleryImage.altText || product.name %>"></button>
+            <% }) %>
+            <% variationList.filter((variation) => variation.imageUrl).forEach((variation) => { %>
+              <button type="button" data-gallery-thumb="<%= assetUrl(variation.imageUrl) %>"><img src="<%= assetUrl(variation.imageUrl) %>" alt="<%= product.name %> <%= variation.Color?.name || '' %> <%= variation.Size?.name || '' %>"></button>
+            <% }) %>
+          </div>
+        <% } %>
         <div class="trust-row">
           <span><i data-lucide="truck"></i> Frete antes do carrinho</span>
           <span><i data-lucide="shield-check"></i> Compra segura</span>
@@ -37,27 +62,45 @@
         <h1><%= product.name %></h1>
         <p class="product-lead"><%= product.descriptionShort || 'Peca streetwear masculina com tecido premium e caimento urbano.' %></p>
         <div class="product-price-row big">
-          <strong class="price">R$ <%= price.toFixed(2).replace('.', ',') %></strong>
+          <strong class="price" data-product-price>R$ <%= price.toFixed(2).replace('.', ',') %></strong>
           <% if (hasPromo) { %><span class="old-price">R$ <%= originalPrice.toFixed(2).replace('.', ',') %></span><% } %>
         </div>
         <div class="installment">ou em ate 3x sem juros</div>
+        <div class="stock-status" data-stock-status><%= defaultVariation ? `${defaultVariation.stock} em estoque` : 'Disponivel' %></div>
 
         <form action="/carrinho" method="post" class="buy-form" data-loading-form>
           <input type="hidden" name="name" value="<%= product.name %>">
           <input type="hidden" name="slug" value="<%= product.slug %>">
-          <input type="hidden" name="price" value="<%= price.toFixed(2) %>">
-          <input type="hidden" name="image" value="<%= image %>">
+          <input type="hidden" name="price" value="<%= price.toFixed(2) %>" data-product-price-input>
+          <input type="hidden" name="image" value="<%= image %>" data-product-image-input>
+          <input type="hidden" name="variationId" value="<%= defaultVariation?.id || '' %>" data-variation-id-input>
+          <input type="hidden" name="color" value="<%= defaultVariation?.Color?.name || '' %>" data-color-name-input>
           <input type="hidden" name="buyNow" value="0" data-buy-now-input>
 
-          <label class="field-label" for="size">Tamanho</label>
-          <div class="size-options" role="radiogroup" aria-label="Escolha o tamanho">
-            <% availableSizes.forEach((size, index) => { %>
-              <label>
-                <input type="radio" name="size" value="<%= size %>" <%= index === 1 ? 'checked' : '' %>>
-                <span><%= size %></span>
-              </label>
-            <% }) %>
-          </div>
+          <% if (availableSizes.length) { %>
+            <label class="field-label" for="size">Tamanho</label>
+            <div class="size-options" role="radiogroup" aria-label="Escolha o tamanho">
+              <% availableSizes.forEach((size, index) => { %>
+                <label>
+                  <input type="radio" name="size" value="<%= size.name %>" data-size-id="<%= size.id %>" <%= defaultVariation?.sizeId === size.id || (!defaultVariation && index === 0) ? 'checked' : '' %>>
+                  <span><%= size.name %></span>
+                </label>
+              <% }) %>
+            </div>
+          <% } %>
+
+          <% if (availableColors.length) { %>
+            <label class="field-label" for="color">Cor</label>
+            <div class="color-options" role="radiogroup" aria-label="Escolha a cor">
+              <% availableColors.forEach((color, index) => { %>
+                <label title="<%= color.name %>">
+                  <input type="radio" name="colorChoice" value="<%= color.name %>" data-color-id="<%= color.id %>" <%= defaultVariation?.colorId === color.id || (!defaultVariation && index === 0) ? 'checked' : '' %>>
+                  <span style="--swatch:<%= color.hexCode || '#999' %>"></span>
+                  <small><%= color.name %></small>
+                </label>
+              <% }) %>
+            </div>
+          <% } %>
 
           <div class="quantity-row">
             <label class="field-label" for="quantity">Quantidade</label>
@@ -156,14 +199,15 @@
   name: product.name,
   description: product.descriptionShort || product.descriptionLong || product.name,
   image: image.startsWith('http') ? image : appUrl + image,
-  sku: product.slug,
+  sku: defaultVariation?.sku || product.slug,
   brand: { '@type': 'Brand', name: 'Duug Styles' },
   offers: {
     '@type': 'Offer',
     price: price.toFixed(2),
     priceCurrency: 'BRL',
-    availability: 'https://schema.org/InStock',
+    availability: defaultVariation && Number(defaultVariation.stock || 0) <= 0 ? 'https://schema.org/OutOfStock' : 'https://schema.org/InStock',
     url: appUrl + '/produto/' + product.slug
   }
 }) %>
 </script>
+<script type="application/json" id="product-variations-data"><%- JSON.stringify(variationData) %></script>

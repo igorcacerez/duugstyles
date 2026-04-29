@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const helmet = require('helmet');
 const cors = require('cors');
 const session = require('express-session');
@@ -15,6 +16,7 @@ const adminRoutes = require('./routes/adminRoutes');
 const errorMiddleware = require('./middlewares/errorMiddleware');
 
 const app = express();
+fs.mkdirSync(path.join(__dirname, 'public', 'uploads'), { recursive: true });
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));

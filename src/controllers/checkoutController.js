@@ -71,14 +71,17 @@ module.exports = {
       total: totals.total
     });
 
-    await Promise.all(cart.map((item) => OrderItem.create({
+    await Promise.all(cart.map((item) => {
+      const details = [item.size ? `Tamanho ${item.size}` : null, item.color ? `Cor ${item.color}` : null].filter(Boolean).join(' / ');
+      return OrderItem.create({
       orderId: order.id,
       variationId: item.variationId || null,
-      productName: item.name,
+      productName: details ? `${item.name} (${details})` : item.name,
       quantity: Number(item.quantity || 1),
       unitPrice: Number(item.price || 0),
       totalPrice: Number(item.price || 0) * Number(item.quantity || 1)
-    })));
+    });
+    }));
 
     await Payment.create({
       orderId: order.id,

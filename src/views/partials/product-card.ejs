@@ -1,6 +1,7 @@
 <%
-  const image = assetUrl(product.ProductImages?.[0]?.imageUrl);
-  const price = Number(product.promoPrice || product.price || 0);
+  const image = assetUrl(product.ProductImages?.[0]?.imageUrl || product.ProductVariations?.find((variation) => variation.imageUrl)?.imageUrl);
+  const variationPrices = (product.ProductVariations || []).map((variation) => Number(variation.price || 0)).filter(Boolean);
+  const price = variationPrices.length ? Math.min(...variationPrices) : Number(product.promoPrice || product.price || 0);
   const originalPrice = Number(product.price || 0);
   const hasPromo = product.promoPrice && Number(product.promoPrice) < originalPrice;
 %>
@@ -26,6 +27,14 @@
       <% if (hasPromo) { %><span class="old-price">R$ <%= originalPrice.toFixed(2).replace('.', ',') %></span><% } %>
     </div>
     <div class="installment">em ate 3x sem juros</div>
+    <% if (product.ProductVariations?.length) { %>
+      <div class="card-attributes">
+        <% [...new Map(product.ProductVariations.map((variation) => [variation.Color?.id, variation.Color]).filter(([, color]) => color)).values()].slice(0, 4).forEach((color) => { %>
+          <span class="color-dot" style="--swatch:<%= color.hexCode || '#999' %>" title="<%= color.name %>"></span>
+        <% }) %>
+        <small><%= product.ProductVariations.length %> variacao(oes)</small>
+      </div>
+    <% } %>
     <form action="/carrinho" method="post" class="product-actions" data-loading-form>
       <input type="hidden" name="name" value="<%= product.name %>">
       <input type="hidden" name="slug" value="<%= product.slug %>">

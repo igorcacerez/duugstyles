@@ -197,6 +197,11 @@ a { color: inherit; text-decoration: none; }
   font-weight: 800;
 }
 
+.admin-help {
+  margin: 0;
+  color: var(--muted);
+}
+
 .admin-form .form-control,
 .admin-form .form-select {
   min-height: 44px;
@@ -228,6 +233,44 @@ a { color: inherit; text-decoration: none; }
 .status-pill.green { background: #dcefe5; color: var(--green); }
 .status-pill.red { background: #f7ded8; color: var(--red); }
 
+.admin-image-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.admin-image-card {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #faf7f1;
+}
+
+.admin-image-card img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.variation-editor {
+  display: grid;
+  gap: 12px;
+}
+
+.variation-row {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr)) auto;
+  gap: 10px;
+  align-items: end;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #faf7f1;
+}
+
 .btn-gold {
   background: var(--gold);
   border-color: var(--gold);
@@ -256,7 +299,9 @@ a { color: inherit; text-decoration: none; }
 
   .metric-grid,
   .admin-form-grid,
-  .admin-form-grid.three {
+  .admin-form-grid.three,
+  .admin-image-grid,
+  .variation-row {
     grid-template-columns: 1fr;
   }
 }
